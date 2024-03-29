@@ -6,12 +6,14 @@
 //
 
 import SwiftUI
+import UniformTypeIdentifiers
 
 struct ContentView: View {
   let apiClient: APIServiceProtocol
 
   @State private var items: [(id: String, title: String)] = []
   @State private var isInFlightRequest = false
+  @State private var stationCode = ""
 
   var body: some View {
     Form {
@@ -19,15 +21,28 @@ struct ContentView: View {
         Text(isInFlightRequest ? "Fetching data..." : "Idle")
       }
 
-      Section("Available endpoints") {
+      Section {
         Button("Fetch stations") { fetchStations() }
       }
       .disabled(isInFlightRequest)
 
+      Section {
+        Text(stationCode.isEmpty ? "Tap on fetched object to select" : stationCode)
+          .opacity(stationCode.isEmpty ? 0.25 : 1)
+
+        Button("Fetch routes") {}
+        Button("Fetch routes") {}
+      }
+      .disabled(isInFlightRequest || stationCode.isEmpty)
+
       if !items.isEmpty {
         Section("Fetched") {
           ForEach(items, id: \.id) { item in
-            Text("\(item.title), \(item.id)")
+            Button {
+              stationCode = item.id
+            } label: {
+              Text("\(item.title), \(item.id)")
+            }
           }
         }
       }
