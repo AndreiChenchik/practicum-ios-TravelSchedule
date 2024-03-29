@@ -90,6 +90,38 @@ tags:
       url: https://yandex.ru/dev/rasp/doc/ru/
 
 paths:
+  /stations_list/:
+    get:
+      summary: Список всех доступных станций
+      description: |
+        Ресурс содержит полный список станций, информацию о которых предоставляют Яндекс Расписания.
+        Список структурирован географически: ответ содержит список стран со вложенными списками
+        регионов и населенных пунктов, в которых находятся станции.
+
+        > **Внимание** ⚠️
+        >
+        > Размер возвращаемого JSON-документа — около 40 МБ.
+      operationId: getStationsList
+      tags:
+        - api
+      parameters:
+        - $ref: "#/components/parameters/format"
+        - $ref: "#/components/parameters/lang"
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StationsListResponse"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/StationsListResponse"
+        400:
+          $ref: "#/components/responses/400"
+        404:
+          $ref: "#/components/responses/404"
+
   /copyright/:
     get:
       summary: Копирайт Яндекс Расписаний
@@ -101,10 +133,10 @@ paths:
         2. Уведомительный текст.
         3. URL Яндекс Расписаний.
       operationId: getCopyright
-      parameters:
-        - $ref: "#/components/parameters/format"
       tags:
         - api
+      parameters:
+        - $ref: "#/components/parameters/format"
       responses:
         200:
           description: Success
@@ -174,6 +206,160 @@ components:
       in: query
 
   schemas:
+    Codes:
+      type: object
+      description: |
+        Коды объекта.
+        На данный момент используется только система кодирования Яндекс Расписаний (`yandex_code`).
+      properties:
+        yandex_code:
+          type: string
+          description: Код в системе кодирования Яндекс Расписаний.
+          example: c22754
+        esr_code:
+          type: string
+          nullable: true
+          description: |
+            Код железнодорожной станции в системе кодирования
+            [ЕСР](https://ru.wikipedia.org/wiki/ЕСР).
+
+            Доступен только железнодорожных для станций, которые имеют код ЕСР.
+          example: 595401
+
+    StationsListResponse:
+      type: object
+      xml:
+        name: "response"
+      properties:
+        countries:
+          description: Список стран.
+          type: array
+          items:
+            type: object
+            properties:
+              title:
+                type: string
+                description: Название страны.
+                example: Россия
+              codes:
+                $ref: "#/components/schemas/Codes"
+              regions:
+                description: Список регионов страны.
+                type: array
+                items:
+                  type: object
+                  properties:
+                    title:
+                      type: string
+                      description: Название региона.
+                      example: Курская область
+                    codes:
+                      $ref: "#/components/schemas/Codes"
+                    settlements:
+                      description: Список населенных пунктов региона.
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          title:
+                            type: string
+                            description: Название населенного пункта.
+                            example: Касторное
+                          codes:
+                            $ref: "#/components/schemas/Codes"
+                          stations:
+                            description: Список станций населенного пункта.
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                title:
+                                  type: string
+                                  description: Название станции.
+                                  example: Касторная-Новая
+                                codes:
+                                  $ref: "#/components/schemas/Codes"
+                                direction:
+                                  type: string
+                                  nullable: true
+                                  description: |
+                                    Направление движения поездов, на котором находится станция.
+
+                                    Значение пусто, если станция не железнодорожная.
+                                  example: Елецкое
+                                station_type:
+                                  type: string
+                                  description: |
+                                    Тип станции.
+
+                                    Возможные значения:
+                                    - `station` — станция;
+                                    - `platform` — платформа;
+                                    - `stop` — остановочный пункт;
+                                    - `checkpoint` — блок-пост;
+                                    - `post` — пост;
+                                    - `crossing` — разъезд;
+                                    - `overtaking_point` — обгонный пункт;
+                                    - `train_station` — вокзал;
+                                    - `airport` — аэропорт;
+                                    - `bus_station` — автовокзал;
+                                    - `bus_stop` — автобусная остановка;
+                                    - `unknown` — станция без типа;
+                                    - `port` — порт;
+                                    - `port_point` — портпункт;
+                                    - `wharf` — пристань;
+                                    - `river_port` — речной вокзал;
+                                    - `marine_station` — морской вокзал.
+                                  example: station
+                                  enum:
+                                    - station
+                                    - platform
+                                    - stop
+                                    - checkpoint
+                                    - post
+                                    - crossing
+                                    - overtaking_point
+                                    - train_station
+                                    - airport
+                                    - bus_station
+                                    - bus_stop
+                                    - unknown
+                                    - port
+                                    - port_point
+                                    - wharf
+                                    - river_port
+                                    - marine_station
+                                longitude:
+                                  type: number
+                                  format: float
+                                  description: Долгота станции.
+                                  example: 38.123675
+                                latitude:
+                                  type: number
+                                  format: float
+                                  description: Широта станции.
+                                  example: 51.780828
+                                transport_type:
+                                  type: string
+                                  description: |
+                                    Тип транспорта, следующего через станцию.
+
+                                    Возможные значения:
+                                    - `plane` — самолет;
+                                    - `train` — поезд;
+                                    - `suburban` — электричка;
+                                    - `bus` — автобус;
+                                    - `water` — морской транспорт;
+                                    - `helicopter` — вертолет.
+                                  enum:
+                                    - plane
+                                    - train
+                                    - suburban
+                                    - bus
+                                    - water
+                                    - helicopter
+                                  example: train
+
     CopyrightReponse:
       type: object
       xml:
@@ -278,6 +464,33 @@ components:
             $ref: "#/components/schemas/ErrorResponse"
 
   parameters:
+    lang:
+      name: lang
+      description: |
+        Язык возвращаемой информации, в формате <код языка>\_<код страны>. Поддерживаемые коды языка
+        описаны стандартом [ISO 639](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2),
+        коды стран — стандартом [ISO 3166](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2).
+
+        По умолчанию ответ возвращается для значения `ru_RU`.
+
+        Поддерживаемые коды языков:
+
+        - `ru` — русский;
+        - `uk` — украинский.
+
+        Поддерживаемые коды стран:
+
+        - `RU` — Россия;
+        - `UA` — Украина.
+      in: query
+      schema:
+        type: string
+        default: ru_RU
+        enum:
+          - ru_RU
+          - ru_UA
+          - uk_UA
+
     format:
       name: format
       description: Формат ответа
