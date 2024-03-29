@@ -15,14 +15,14 @@ struct ContentView: View {
 
   var body: some View {
     Form {
+      Section("Status") {
+        Text(isInFlightRequest ? "Fetching data..." : "Idle")
+      }
+
       Section("Available endpoints") {
         Button("Fetch stations") { fetchStations() }
       }
       .disabled(isInFlightRequest)
-
-      if isInFlightRequest {
-        ProgressView()
-      }
 
       if !items.isEmpty {
         Section("Fetched") {
