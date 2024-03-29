@@ -1,117 +1,147 @@
 openapi: 3.0.3
+
 info:
   title: API.Rasp.Yandex.Net
-  description: API Яндекс.Расписаний
+  description: |
+    [Оригинальная документация](https://yandex.ru/dev/rasp/doc/ru/)
+
+    API Яндекс Расписаний — инструмент программного доступа к данным сервиса
+    о маршрутах и времени движения транспортных средств.
+
+    API организован в соответствии с принципами [REST](http://ru.wikipedia.org/wiki/REST).
+    Взаимодействие с API осуществляется по протоколу HTTPS посредством GET-запросов.
+    Сервис возвращает данные в форматах: JSON, XML.
+
+    Руководство содержит информацию о работе с API и предназначено для веб-разработчиков,
+    которые хотят использовать информацию Яндекс Расписаний на страницах своих сайтов.
+
+    > **Внимание** ⚠️
+    >
+    > Обязательным условием использования API является указание на сайте информации об источнике
+    > предоставления данных — Яндекс Расписаниях.
+    > Получить информацию о Яндекс Расписаниях можно с помощью API запроса `/copyright`
+
+    <details>
+      <summary>**Терминология**</summary>
+      #### Расписание
+      Периодичность или время отправления рейсов.
+      #### Станция
+      Место отправления, прибытия или остановки транспортного средства.
+      Например, автобусная остановка, автовокзал, аэропорт и т. п.
+      #### Рейс
+      Маршрут движения транспортного средства от места отправления до места назначения
+      по заранее определенному маршруту и установленному расписанию.
+      #### Нитка
+      Маршрут и время движения транспортного средства от начальной точки движения до конечной,
+      привязанный к определенной дате. Каждому рейсу соответствует нитка или набор ниток,
+      определенный для конкретного дня. Например, в будние дни рейс «Москва — Голицыно»
+      может двигаться по ниткам: «Москва — Одинцово», «Одинцово — Голицыно».
+      В выходные дни этот же рейс может двигаться по нитке «Москва — Голицыно».
+      #### Интервальная нитка
+      Нитка, на остановках которой транспорт останавливается с определенной периодичностью,
+      но без четкого расписания.
+      #### Перевозчик
+      Предприятие, принявшее на себя обязанность доставить пассажира из места отправления
+      в место назначения.
+      #### Система кодирования
+      Совокупность правил кодового обозначения городов, станций, перевозчиков
+      (см. раздел Системы кодирования).
+    </details>
+
+    <details>
+      <summary>**Системы кодирования**</summary>
+
+      При работе с API можно использовать следующие системы кодирования:
+
+      | **Название** | **Описание** | **Используемые коды** |
+      | --- | --- | --- |
+      | Система кодирования Яндекс Расписаний | Коды городов, станций, перевозчиков. | Коды городов, станций, перевозчиков. |
+      | [IATA](https://ru.wikipedia.org/wiki/ИАТА) | Коды Международной ассоциации воздушного транспорта для стран, населенных пунктов, станций (аэропортов), перевозчиков. | Коды станций и перевозчиков. |
+      | [ICAO](https://ru.wikipedia.org/wiki/ИКАО) | Коды Международной организации гражданской авиации для станций (аэропортов), перевозчиков. | Коды станций и перевозчиков. |
+      | [Sirena](http://ru.wikipedia.org/wiki/Сирена%20(сеть)) | Коды в системах, построенных на базе сетей «Сирена», для городов, станций (аэропортов), перевозчиков. | Коды станций и перевозчиков. |
+      | [ЕСР](https://ru.wikipedia.org/wiki/Единая%20сетевая%20разметка) | Коды железнодорожных станций СНГ и стран Балтии. | Коды станций. |
+      | [Экспресс-3](http://www.express-3.ru/) | Коды железнодорожных станций СНГ и стран Балтии. | Коды станций. |
+    </details>
   version: 3.0.0
+
 servers:
-- url: https://api.rasp.yandex.net
-tags:
-- name: Список ближайших станций
-  description: Список ближайших станций
+  - url: https://api.rasp.yandex.net/v3.0
+    description: Main API
+
+security:
+  - ApiKeyHeader: []
+  - ApiKeyQuery: []
+
 paths:
-  /v3.0/nearest_stations/:
+  /search/:
     get:
+      summary: Расписание рейсов между станциями
+      description: |
+        Запрос позволяет получить список ***рейсов***, следующих от указанной ***станции***
+        отправления к указанной станции прибытия и информацию по каждому рейсу.
+      operationId: search
       tags:
-      - getNearestStations
-      summary: Список ближайших станций
-      operationId: getNearestStations
-      parameters:
-      - name: apikey
-        in: query
-        description: API key
-        required: true
-        schema:
-          type: string
-      - name: lat
-        in: query
-        description: широта
-        required: true
-        schema:
-          type: number
-      - name: lng
-        in: query
-        description: долгота
-        required: true
-        schema:
-          type: number
-      - name: distance
-        in: query
-        description: радиус охвата
-        required: true
-        schema:
-          type: integer
-      - name: format
-        in: query
-        description: json или xml
-        required: false
-        schema:
-          type: string
-      - name: lang
-        in: query
-        description: lang
-        required: false
-        schema:
-          type: string
+        - api
       responses:
-        "200":
-          description: success
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Stations'
+        200:
+          description: Success
+
+tags:
+  - name: api
+    description: API Яндекс.Расписаний
+    externalDocs:
+      description: Оригинальная документация
+      url: https://yandex.ru/dev/rasp/doc/ru/
+
 components:
-  schemas:
-    Stations:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        stations:
-          type: array
-          items:
-            $ref: '#/components/schemas/Station'
-    Pagination:
-      type: object
-      properties:
-        total:
-          type: integer
-        limit:
-          type: integer
-        offset:
-          type: integer
-    Station:
-      type: object
-      properties:
-        type:
-          type: string
-        title:
-          type: string
-        short_title:
-          type: string
-        popular_title:
-          type: string
-        code:
-          type: string
-        lat:
-          type: number
-        lng:
-          type: number
-        station_type:
-          type: string
-        station_type_name:
-          type: string
-        transport_type:
-          type: string
-        distance:
-          type: number
-        majority:
-          type: integer
-        type_choices:
-          $ref: '#/components/schemas/Schedule'
-    Schedule:
-      type: object
-      properties:
-        desktop_url:
-          type: string
-        touch_url:
-          type: string
+  securitySchemes:
+    ApiKeyHeader:
+      description: |
+        ### Доступ к API
+
+        Чтобы работать с API, необходимо:
+        1. Сформировать ключ в [Кабинете разработчика](https://developer.tech.yandex.ru/).
+        2. Пройти процедуру активации ключа.
+        3. Использовать ключ в каждом запросе к API.
+
+        #### Формирование ключа
+
+        Авторизируйтесь в [Кабинете разработчика](https://developer.tech.yandex.ru/),
+        используя любой имеющийся у вас логин на Яндексе (если логина нет,
+        [зарегистрируйте новый](http://help.yandex.ru/passport/authorization/registration.xml#login)).
+
+        Для формирования ключа укажите:
+          - Название ключа (например, название вашего проекта).
+          - Название сервиса — «API Яндекс Расписаний».
+
+        Ключ, привязанный к сервису API Яндекс Расписаний, будет сгенерирован.
+
+        #### Использование ключа
+
+        Инструкция по активации будет отправлена на адрес вашей Яндекс Почты
+        (<ваш логин на Яндексе>@yandex.ru). Пройдя процедуру активации,
+        ожидайте письмо с ее подтверждением.
+
+        Каждый запрос к API должен содержать: ключ, который может быть передан в качестве значения
+        параметра `apikey` запроса или в HTTP-заголовке `Authorization`
+        (параметр `apikey` имеет более высокий приоритет).
+
+        ### Ключ доступа к API в заголовке запроса
+
+        ```
+        Authorization: 1eb31582-941a-3ac8-a61f-041c344495ab
+        ```
+      type: apiKey
+      name: Authorization
+      in: header
+
+    ApiKeyQuery:
+      description: |
+        ### Ключ доступа к API в параметрах запроса
+
+        ```
+        https://api.rasp.yandex.net/v3.0/<route>/?apiKey=1eb31582-941a-3ac8-a61f-041c344495ab
+        ```
+      type: apiKey
+      name: apiKey
+      in: query
