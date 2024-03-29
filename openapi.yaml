@@ -62,6 +62,16 @@ info:
       | [ЕСР](https://ru.wikipedia.org/wiki/Единая%20сетевая%20разметка) | Коды железнодорожных станций СНГ и стран Балтии. | Коды станций. |
       | [Экспресс-3](http://www.express-3.ru/) | Коды железнодорожных станций СНГ и стран Балтии. | Коды станций. |
     </details>
+
+    <details>
+      <summary>**Сообщения об ошибках**</summary>
+
+      Если при выполнении запроса произошла ошибка, сервер возвращает
+      HTTP-статус ответа с описанием ошибки.
+
+      Сообщение об ошибке возвращается в том формате, который указан в запросе.
+      Описание ошибок передается в элементе `error`.
+    </details>
   version: 3.0.0
 
 servers:
@@ -71,6 +81,13 @@ servers:
 security:
   - ApiKeyHeader: []
   - ApiKeyQuery: []
+
+tags:
+  - name: api
+    description: Запросы к API
+    externalDocs:
+      description: Оригинальная документация
+      url: https://yandex.ru/dev/rasp/doc/ru/
 
 paths:
   /search/:
@@ -85,13 +102,6 @@ paths:
       responses:
         200:
           description: Success
-
-tags:
-  - name: api
-    description: API Яндекс.Расписаний
-    externalDocs:
-      description: Оригинальная документация
-      url: https://yandex.ru/dev/rasp/doc/ru/
 
 components:
   securitySchemes:
