@@ -5,53 +5,67 @@
 //  Created by andrei.chenchik on 28.03.24.
 //
 
-import OpenAPIURLSession
 import SwiftUI
 
 struct ContentView: View {
+  let apiClient: APIServiceProtocol
+
+  @State private var items: [(id: String, title: String)] = []
+  @State private var isInFlightRequest = false
+
   var body: some View {
-    VStack {
-      Image(systemName: "globe")
-        .imageScale(.large)
-        .foregroundStyle(.tint)
-      Text("Hello, world!")
-    }
-    .padding()
-    .task {
-      do {
-        try stations()
-      } catch {
-        print(error)
+    Form {
+      Section("Available endpoints") {
+        Button("Fetch stations") { fetchStations() }
+      }
+      .disabled(isInFlightRequest)
+
+      if isInFlightRequest {
+        ProgressView()
+      }
+
+      if !items.isEmpty {
+        Section("Fetched") {
+          ForEach(items, id: \.id) { item in
+            Text("\(item.title), \(item.id)")
+          }
+        }
       }
     }
   }
 
-  func stations() throws {
-    let client = try Client(
-      serverURL: Servers.server1(),
-      transport: URLSessionTransport()
-    )
-
-    let service = NearestStationsService(
-      client: client,
-      apikey: "KEY"
-    )
+  func fetchStations() {
+    isInFlightRequest = true
+    items = []
 
     Task {
       do {
-        let stations = try await service.getNearestStations(
-          lat: 59.864177,
-          lng: 30.319163,
-          distance: 50
-        )
-        print(stations)
+        let stations = try await apiClient.getAllStations()
+        items = stations.map { (id: $0.code, title: $0.title) }
       } catch {
         print(error)
       }
+
+      isInFlightRequest = false
     }
   }
 }
 
-#Preview {
-  ContentView()
-}
+#if DEBUG
+  struct PreviewClient: APIServiceProtocol {
+    func getAllStations() async throws -> [Station] {
+      try await Task.sleep(nanoseconds: 1 * 1_000_000_000)
+
+      return [
+        Station(title: "London", code: "LON"),
+        Station(title: "Paris", code: "PAR"),
+        Station(title: "Berlin", code: "BER"),
+      ]
+    }
+  }
+
+  #Preview {
+    ContentView(apiClient: PreviewClient())
+  }
+
+#endif

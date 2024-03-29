@@ -117,6 +117,9 @@ paths:
             application/xml:
               schema:
                 $ref: "#/components/schemas/StationsListResponse"
+            text/html:
+              schema:
+                $ref: "#/components/schemas/StationsListResponse"
         400:
           $ref: "#/components/responses/400"
         404:
@@ -226,6 +229,150 @@ components:
             Доступен только железнодорожных для станций, которые имеют код ЕСР.
           example: 595401
 
+    Station:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Название станции.
+          example: Касторная-Новая
+        codes:
+          $ref: "#/components/schemas/Codes"
+        direction:
+          type: string
+          nullable: true
+          description: |
+            Направление движения поездов, на котором находится станция.
+
+            Значение пусто, если станция не железнодорожная.
+          example: Елецкое
+        station_type:
+          type: string
+          description: |
+            Тип станции.
+
+            Возможные значения:
+            - `station` — станция;
+            - `platform` — платформа;
+            - `stop` — остановочный пункт;
+            - `checkpoint` — блок-пост;
+            - `post` — пост;
+            - `crossing` — разъезд;
+            - `overtaking_point` — обгонный пункт;
+            - `train_station` — вокзал;
+            - `airport` — аэропорт;
+            - `bus_station` — автовокзал;
+            - `bus_stop` — автобусная остановка;
+            - `unknown` — станция без типа;
+            - `port` — порт;
+            - `port_point` — портпункт;
+            - `wharf` — пристань;
+            - `river_port` — речной вокзал;
+            - `marine_station` — морской вокзал.
+          example: station
+          enum:
+            - station
+            - platform
+            - stop
+            - checkpoint
+            - post
+            - crossing
+            - overtaking_point
+            - train_station
+            - airport
+            - bus_station
+            - bus_stop
+            - unknown
+            - port
+            - port_point
+            - wharf
+            - river_port
+            - marine_station
+            - ""
+          nullable: true
+        longitude:
+          oneOf:
+            - type: number
+              format: float
+            - type: string
+          nullable: true
+          description: Долгота станции.
+          example: 38.123675
+        latitude:
+          oneOf:
+            - type: number
+              format: float
+            - type: string
+          description: Широта станции.
+          example: 51.780828
+        transport_type:
+          type: string
+          description: |
+            Тип транспорта, следующего через станцию.
+
+            Возможные значения:
+            - `plane` — самолет;
+            - `train` — поезд;
+            - `suburban` — электричка;
+            - `bus` — автобус;
+            - `water` — речной транспорт;
+            - `sea` — морской транспорт;
+            - `helicopter` — вертолет.
+          enum:
+            - plane
+            - train
+            - suburban
+            - bus
+            - water
+            - helicopter
+            - sea
+          example: train
+
+    StationSettlement:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Название населенного пункта.
+          example: Касторное
+        codes:
+          $ref: "#/components/schemas/Codes"
+        stations:
+          description: Список станций населенного пункта.
+          type: array
+          items:
+            $ref: "#/components/schemas/Station"
+
+    StationRegion:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Название региона.
+          example: Курская область
+        codes:
+          $ref: "#/components/schemas/Codes"
+        settlements:
+          description: Список населенных пунктов региона.
+          type: array
+          items:
+            $ref: "#/components/schemas/StationSettlement"
+
+    StationCountry:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Название страны.
+          example: Россия
+        codes:
+          $ref: "#/components/schemas/Codes"
+        regions:
+          description: Список регионов страны.
+          type: array
+          items:
+            $ref: "#/components/schemas/StationRegion"
+
     StationsListResponse:
       type: object
       xml:
@@ -235,130 +382,7 @@ components:
           description: Список стран.
           type: array
           items:
-            type: object
-            properties:
-              title:
-                type: string
-                description: Название страны.
-                example: Россия
-              codes:
-                $ref: "#/components/schemas/Codes"
-              regions:
-                description: Список регионов страны.
-                type: array
-                items:
-                  type: object
-                  properties:
-                    title:
-                      type: string
-                      description: Название региона.
-                      example: Курская область
-                    codes:
-                      $ref: "#/components/schemas/Codes"
-                    settlements:
-                      description: Список населенных пунктов региона.
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          title:
-                            type: string
-                            description: Название населенного пункта.
-                            example: Касторное
-                          codes:
-                            $ref: "#/components/schemas/Codes"
-                          stations:
-                            description: Список станций населенного пункта.
-                            type: array
-                            items:
-                              type: object
-                              properties:
-                                title:
-                                  type: string
-                                  description: Название станции.
-                                  example: Касторная-Новая
-                                codes:
-                                  $ref: "#/components/schemas/Codes"
-                                direction:
-                                  type: string
-                                  nullable: true
-                                  description: |
-                                    Направление движения поездов, на котором находится станция.
-
-                                    Значение пусто, если станция не железнодорожная.
-                                  example: Елецкое
-                                station_type:
-                                  type: string
-                                  description: |
-                                    Тип станции.
-
-                                    Возможные значения:
-                                    - `station` — станция;
-                                    - `platform` — платформа;
-                                    - `stop` — остановочный пункт;
-                                    - `checkpoint` — блок-пост;
-                                    - `post` — пост;
-                                    - `crossing` — разъезд;
-                                    - `overtaking_point` — обгонный пункт;
-                                    - `train_station` — вокзал;
-                                    - `airport` — аэропорт;
-                                    - `bus_station` — автовокзал;
-                                    - `bus_stop` — автобусная остановка;
-                                    - `unknown` — станция без типа;
-                                    - `port` — порт;
-                                    - `port_point` — портпункт;
-                                    - `wharf` — пристань;
-                                    - `river_port` — речной вокзал;
-                                    - `marine_station` — морской вокзал.
-                                  example: station
-                                  enum:
-                                    - station
-                                    - platform
-                                    - stop
-                                    - checkpoint
-                                    - post
-                                    - crossing
-                                    - overtaking_point
-                                    - train_station
-                                    - airport
-                                    - bus_station
-                                    - bus_stop
-                                    - unknown
-                                    - port
-                                    - port_point
-                                    - wharf
-                                    - river_port
-                                    - marine_station
-                                longitude:
-                                  type: number
-                                  format: float
-                                  description: Долгота станции.
-                                  example: 38.123675
-                                latitude:
-                                  type: number
-                                  format: float
-                                  description: Широта станции.
-                                  example: 51.780828
-                                transport_type:
-                                  type: string
-                                  description: |
-                                    Тип транспорта, следующего через станцию.
-
-                                    Возможные значения:
-                                    - `plane` — самолет;
-                                    - `train` — поезд;
-                                    - `suburban` — электричка;
-                                    - `bus` — автобус;
-                                    - `water` — морской транспорт;
-                                    - `helicopter` — вертолет.
-                                  enum:
-                                    - plane
-                                    - train
-                                    - suburban
-                                    - bus
-                                    - water
-                                    - helicopter
-                                  example: train
+            $ref: "#/components/schemas/StationCountry"
 
     CopyrightReponse:
       type: object

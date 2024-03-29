@@ -15,7 +15,10 @@
 		F26C6A2F2BB620E700A54993 /* OpenAPIRuntime in Frameworks */ = {isa = PBXBuildFile; productRef = F26C6A2E2BB620E700A54993 /* OpenAPIRuntime */; };
 		F26C6A382BB621F100A54993 /* openapi.yaml in Resources */ = {isa = PBXBuildFile; fileRef = F26C6A362BB621F100A54993 /* openapi.yaml */; };
 		F26C6A392BB621F100A54993 /* openapi-generator-config.yaml in Resources */ = {isa = PBXBuildFile; fileRef = F26C6A372BB621F100A54993 /* openapi-generator-config.yaml */; };
-		F26C6A3B2BB6233500A54993 /* NearestStationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F26C6A3A2BB6233500A54993 /* NearestStationService.swift */; };
+		F26C6A3B2BB6233500A54993 /* APIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F26C6A3A2BB6233500A54993 /* APIService.swift */; };
+		F26C6A3F2BB71FD400A54993 /* AuthenticationMiddleware.swift in Sources */ = {isa = PBXBuildFile; fileRef = F26C6A3E2BB71FD400A54993 /* AuthenticationMiddleware.swift */; };
+		F26C6A432BB7260500A54993 /* StationsListFixMiddleware.swift in Sources */ = {isa = PBXBuildFile; fileRef = F26C6A422BB7260500A54993 /* StationsListFixMiddleware.swift */; };
+		F26C6A482BB72C8C00A54993 /* Station.swift in Sources */ = {isa = PBXBuildFile; fileRef = F26C6A472BB72C8C00A54993 /* Station.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,7 +29,10 @@
 		F26C6A212BB604FC00A54993 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		F26C6A362BB621F100A54993 /* openapi.yaml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.yaml; path = openapi.yaml; sourceTree = "<group>"; };
 		F26C6A372BB621F100A54993 /* openapi-generator-config.yaml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.yaml; path = "openapi-generator-config.yaml"; sourceTree = "<group>"; };
-		F26C6A3A2BB6233500A54993 /* NearestStationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NearestStationService.swift; sourceTree = "<group>"; };
+		F26C6A3A2BB6233500A54993 /* APIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIService.swift; sourceTree = "<group>"; };
+		F26C6A3E2BB71FD400A54993 /* AuthenticationMiddleware.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationMiddleware.swift; sourceTree = "<group>"; };
+		F26C6A422BB7260500A54993 /* StationsListFixMiddleware.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StationsListFixMiddleware.swift; sourceTree = "<group>"; };
+		F26C6A472BB72C8C00A54993 /* Station.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Station.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -64,11 +70,13 @@
 		F26C6A192BB604FC00A54993 /* TravelSchedule */ = {
 			isa = PBXGroup;
 			children = (
+				F26C6A452BB72C7F00A54993 /* Models */,
+				F26C6A412BB725DB00A54993 /* Middleware */,
 				F26C6A1A2BB604FC00A54993 /* TravelScheduleApp.swift */,
 				F26C6A1C2BB604FC00A54993 /* ContentView.swift */,
 				F26C6A1E2BB604FC00A54993 /* Assets.xcassets */,
 				F26C6A202BB604FC00A54993 /* Preview Content */,
-				F26C6A3A2BB6233500A54993 /* NearestStationService.swift */,
+				F26C6A3A2BB6233500A54993 /* APIService.swift */,
 			);
 			path = TravelSchedule;
 			sourceTree = "<group>";
@@ -86,6 +94,23 @@
 			children = (
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		F26C6A412BB725DB00A54993 /* Middleware */ = {
+			isa = PBXGroup;
+			children = (
+				F26C6A422BB7260500A54993 /* StationsListFixMiddleware.swift */,
+				F26C6A3E2BB71FD400A54993 /* AuthenticationMiddleware.swift */,
+			);
+			path = Middleware;
+			sourceTree = "<group>";
+		};
+		F26C6A452BB72C7F00A54993 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				F26C6A472BB72C8C00A54993 /* Station.swift */,
+			);
+			path = Models;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -170,9 +195,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F26C6A432BB7260500A54993 /* StationsListFixMiddleware.swift in Sources */,
 				F26C6A1D2BB604FC00A54993 /* ContentView.swift in Sources */,
-				F26C6A3B2BB6233500A54993 /* NearestStationService.swift in Sources */,
+				F26C6A3B2BB6233500A54993 /* APIService.swift in Sources */,
 				F26C6A1B2BB604FC00A54993 /* TravelScheduleApp.swift in Sources */,
+				F26C6A482BB72C8C00A54993 /* Station.swift in Sources */,
+				F26C6A3F2BB71FD400A54993 /* AuthenticationMiddleware.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
