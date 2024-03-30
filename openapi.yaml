@@ -90,6 +90,54 @@ tags:
       url: https://yandex.ru/dev/rasp/doc/ru/
 
 paths:
+  /carrier/:
+    get:
+      summary: Информация о перевозчике
+      description: |
+        Запрос позволяет получить информацию о ***перевозчике*** по указанному коду перевозчика.
+
+        Коды перевозчиков можно получить в публичных справочниках кодов,
+        а также в ответах на запросы:
+          - Расписание рейсов между станциями
+          - Расписание рейсов по станции
+          - Список станций следования
+      operationId: getCarrier
+      tags:
+        - api
+      parameters:
+        - name: code
+          in: query
+          description: |
+            Код перевозчика. По умолчанию в системе кодирования Яндекс Расписаний.
+            Чтобы отправить код в другой системе кодирования, укажите параметр `system`.
+
+            Если код указан в системе кодирования IATA,
+            в ответе могут быть описаны несколько перевозчиков.
+          required: true
+          schema:
+            type: string
+          example: 680
+        - $ref: "#/components/parameters/format"
+        - $ref: "#/components/parameters/lang"
+        - $ref: "#/components/parameters/system"
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CarrierResponse"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/CarrierResponse"
+            text/html:
+              schema:
+                $ref: "#/components/schemas/CarrierResponse"
+        400:
+          $ref: "#/components/responses/400"
+        404:
+          $ref: "#/components/responses/404"
+
   /stations_list/:
     get:
       summary: Список всех доступных станций
@@ -101,7 +149,7 @@ paths:
         > **Внимание** ⚠️
         >
         > Размер возвращаемого JSON-документа — около 40 МБ.
-      operationId: getStationsList
+      operationId: getStations
       tags:
         - api
       parameters:
@@ -113,13 +161,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/StationsListResponse"
+                $ref: "#/components/schemas/StationsResponse"
             application/xml:
               schema:
-                $ref: "#/components/schemas/StationsListResponse"
+                $ref: "#/components/schemas/StationsResponse"
             text/html:
               schema:
-                $ref: "#/components/schemas/StationsListResponse"
+                $ref: "#/components/schemas/StationsResponse"
         400:
           $ref: "#/components/responses/400"
         404:
@@ -209,7 +257,7 @@ components:
       in: query
 
   schemas:
-    Codes:
+    StationCodes:
       type: object
       description: |
         Коды объекта.
@@ -229,6 +277,29 @@ components:
             Доступен только железнодорожных для станций, которые имеют код ЕСР.
           example: 595401
 
+    CarrierCodes:
+      type: object
+      description: |
+        Список кодов перевозчика в других системах кодирования, поддерживаемых Яндекс Расписаниями.
+      properties:
+        icao:
+          type: string
+          nullable: true
+          description: Код перевозчика в системе кодирования [ICAO](https://ru.wikipedia.org/wiki/%D0%9C%D0%B5%D0%B6%D0%B4%D1%83%D0%BD%D0%B0%D1%80%D0%BE%D0%B4%D0%BD%D0%B0%D1%8F_%D0%BE%D1%80%D0%B3%D0%B0%D0%BD%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D1%8F_%D0%B3%D1%80%D0%B0%D0%B6%D0%B4%D0%B0%D0%BD%D1%81%D0%BA%D0%BE%D0%B9_%D0%B0%D0%B2%D0%B8%D0%B0%D1%86%D0%B8%D0%B8).
+          example: c22754
+
+        sirena:
+          type: string
+          nullable: true
+          description: Код перевозчика в системе кодирования [Sirena](http://ru.wikipedia.org/wiki/%D0%A1%D0%B8%D1%80%D0%B5%D0%BD%D0%B0_(%D1%81%D0%B5%D1%82%D1%8C)).
+          example: 595401
+
+        iata:
+          type: string
+          nullable: true
+          description: Код перевозчика в системе кодирования [IATA](https://ru.wikipedia.org/wiki/%D0%9C%D0%B5%D0%B6%D0%B4%D1%83%D0%BD%D0%B0%D1%80%D0%BE%D0%B4%D0%BD%D0%B0%D1%8F_%D0%B0%D1%81%D1%81%D0%BE%D1%86%D0%B8%D0%B0%D1%86%D0%B8%D1%8F_%D0%B2%D0%BE%D0%B7%D0%B4%D1%83%D1%88%D0%BD%D0%BE%D0%B3%D0%BE_%D1%82%D1%80%D0%B0%D0%BD%D1%81%D0%BF%D0%BE%D1%80%D1%82%D0%B0).
+          example: SU
+
     Station:
       type: object
       properties:
@@ -237,7 +308,7 @@ components:
           description: Название станции.
           example: Касторная-Новая
         codes:
-          $ref: "#/components/schemas/Codes"
+          $ref: "#/components/schemas/StationCodes"
         direction:
           type: string
           nullable: true
@@ -315,7 +386,7 @@ components:
             - `train` — поезд;
             - `suburban` — электричка;
             - `bus` — автобус;
-            - `water` — речной транспорт;
+            - `water`, `river` — речной транспорт;
             - `sea` — морской транспорт;
             - `helicopter` — вертолет.
           enum:
@@ -324,6 +395,7 @@ components:
             - suburban
             - bus
             - water
+            - river
             - helicopter
             - sea
           example: train
@@ -336,7 +408,7 @@ components:
           description: Название населенного пункта.
           example: Касторное
         codes:
-          $ref: "#/components/schemas/Codes"
+          $ref: "#/components/schemas/StationCodes"
         stations:
           description: Список станций населенного пункта.
           type: array
@@ -351,7 +423,7 @@ components:
           description: Название региона.
           example: Курская область
         codes:
-          $ref: "#/components/schemas/Codes"
+          $ref: "#/components/schemas/StationCodes"
         settlements:
           description: Список населенных пунктов региона.
           type: array
@@ -366,14 +438,70 @@ components:
           description: Название страны.
           example: Россия
         codes:
-          $ref: "#/components/schemas/Codes"
+          $ref: "#/components/schemas/StationCodes"
         regions:
           description: Список регионов страны.
           type: array
           items:
             $ref: "#/components/schemas/StationRegion"
 
-    StationsListResponse:
+    Carrier:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Название перевозчика.
+          example: РЖД
+        code:
+          type: number
+          description: |
+            Код перевозчика в указанной системе кодирования
+            (по умолчанию — в системе Яндекс Расписаний.)
+          example: 680
+        codes:
+          $ref: "#/components/schemas/CarrierCodes"
+        phone:
+          type: string
+          nullable: true
+          description: Контактный номер телефона перевозчика.
+          example: +7 (800) 775-00-00
+        site:
+          type: string
+          nullable: true
+          description: Ссылка на сайт перевозчика.
+          example: http://rzd.ru
+        contacts:
+          type: string
+          nullable: true
+          description: Контактная информация, в свободной форме.
+          example: |
+            Телефон: +7 (1234) 123456
+        logo:
+          type: string
+          nullable: true
+          description: |
+            Ссылка на используемый Яндексом логотип перевозчика в растровом формате.
+          example: //yastatic.net/rasp/media/data/company/logo/logo_1.jpg
+        email:
+          type: string
+          nullable: true
+          description: Электронный почтовый адрес перевозчика.
+          example: some@email.com
+        address:
+          type: string
+          nullable: true
+          description: Юридический адрес перевозчика.
+          example: Санкт-Петербург, ул. Строителей, д. 18
+
+    CarrierResponse:
+      type: object
+      xml:
+        name: "response"
+      properties:
+        carrier:
+          $ref: "#/components/schemas/Carrier"
+
+    StationsResponse:
       type: object
       xml:
         name: "response"
@@ -525,3 +653,27 @@ components:
         enum:
           - json
           - xml
+
+    system:
+      name: system
+      description: |
+        ***Система кодирования***, в которой указывается код перевозчика (параметр `code`) в запросе.
+        Возможные значения:
+        - `yandex` (значение по умолчанию) — система кодирования Яндекс Расписаний;
+        - `iata` — коды Международной ассоциации воздушного транспорта](https://ru.wikipedia.org/wiki/%D0%9A%D0%BE%D0%B4_%D0%98%D0%90%D0%A2%D0%90);
+        - `sirena` — коды в системах, построенных на базе [сетей «Сирена»](http://ru.wikipedia.org/wiki/%D0%A1%D0%B8%D1%80%D0%B5%D0%BD%D0%B0_(%D1%81%D0%B5%D1%82%D1%8C));
+        - `express` — коды железнодорожных станций СНГ и стран Балтии из базы [Экспресс-3](http://www.express-3.ru/);
+        - `esr` — коды железнодорожных станций СНГ и стран Балтии из базы [ЕСР](https://ru.wikipedia.org/wiki/%D0%95%D0%B4%D0%B8%D0%BD%D0%B0%D1%8F_%D1%81%D0%B5%D1%82%D0%B5%D0%B2%D0%B0%D1%8F_%D1%80%D0%B0%D0%B7%D0%BC%D0%B5%D1%82%D0%BA%D0%B0).
+
+        Параметр обязателен, если используется система кодирования,
+        отличная от системы кодирования Яндекс Расписаний.
+      in: query
+      schema:
+        type: string
+        default: yandex
+        enum:
+          - yandex
+          - iata
+          - sirena
+          - express
+          - esr

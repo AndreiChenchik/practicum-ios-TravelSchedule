@@ -8,4 +8,5 @@
 struct Station {
   let title: String
   let code: String
+  let coordinates: String
 }
