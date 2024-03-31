@@ -90,6 +90,128 @@ tags:
       url: https://yandex.ru/dev/rasp/doc/ru/
 
 paths:
+  /schedule/:
+    get:
+      summary: Расписание рейсов по станции
+      description: |
+        Запрос позволяет получить список
+        [рейсов](https://yandex.ru/dev/rasp/doc/ru/concepts/termin#schedule), отправляющихся от
+        указанной [станции](https://yandex.ru/dev/rasp/doc/ru/concepts/termin#station) и информацию
+        по каждому рейсу.
+      operationId: getSchedule
+      tags:
+        - api
+
+      parameters:
+      - name: station
+        in: query
+        description: |
+          Код станции. Должен быть указан в
+          [системе кодирования](https://yandex.ru/dev/rasp/doc/ru/concepts/coding-system).
+        required: true
+        schema:
+          type: string
+
+      - name: date
+        in: query
+        description: |
+          Дата, на которую необходимо получить список рейсов. Должна быть указана в формате,
+          соответствующем стандарту [ISO 8601](https://ru.wikipedia.org/wiki/ISO_8601).
+          Например, YYYY-MM-DD.
+
+          Если в запросе указана конкретная дата, в выдаче будут показаны все будущие рейсы, в том
+          числе с пересадками.
+
+          Если запрос передан без даты, в выдаче будут показаны только прямые рейсы на все даты. В
+          этом случае рейсы с пересадками не попадут в выдачу.
+        schema:
+          type: string
+          format: date
+        example: 2023-12-31
+
+      - name: transport_types
+        in: query
+        explode: false
+        description: |
+          Тип транспортного средства. Возможные значения:
+
+          - `plane` — самолет;
+          - `train` — поезд;
+          - `suburban` — электричка;
+          - `bus` — автобус;
+          - `water` — морской транспорт;
+          - `helicopter` — вертолет.
+
+          По умолчанию возвращается список рейсов по всем типам транспортных средств.
+        schema:
+          type: array
+          items:
+            $ref: "#/components/schemas/TransportType"
+
+      - name: direction
+        in: query
+        description: |
+          Код направления, по которому необходимо получить список рейсов электричек по станции
+          (например, «arrival», «all» или «на Москву»).
+
+          Параметр `direction` игнорируется, если значение параметра `transport_types` отлично от
+          `suburban`.
+
+          Доступные для станции коды направлений можно получить, запросив расписание на любую дату
+          без параметра `direction`, но с параметром `transport_types=suburban`. Список направлений
+          возвращается в элементе ответа `directions`.
+        schema:
+          type: string
+
+      - name: event
+        in: query
+        description: |
+          Событие, для которого нужно отфильтровать нитки в расписании.
+
+          Поддерживаемые значения:
+
+          - `departure` — включить в ответ только отправляющиеся со станции нитки (по умолчанию);
+          - `arrival` — включить в ответ только прибывающие на станцию нитки.
+        schema:
+          type: string
+          enum:
+            - departure
+            - arrival
+
+      - name: result_timezone
+        in: query
+        description: |
+          Часовой пояс, для которого следует указывать даты и времена в ответе. Если параметр не
+          передан, каждая дата и время в ответе будут указаны в часовом поясе соответствующей
+          станции.
+
+          Часовые пояса следует указывать с помощью идентификаторов
+          [базы данных tz](https://ru.wikipedia.org/wiki/Tz_database). В английской Википедии
+          приведен список идентификаторов из последней версии этой базы данных (в столбце «TZ»
+          таблицы).
+        schema:
+          type: string
+
+      - $ref: "#/components/parameters/format"
+      - $ref: "#/components/parameters/lang"
+      - $ref: "#/components/parameters/system"
+      - $ref: "#/components/parameters/show_systems"
+
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ScheduleResponse"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/ScheduleResponse"
+        400:
+          $ref: "#/components/responses/400"
+        404:
+          $ref: "#/components/responses/404"
+
   /thread/:
     get:
       summary: Список станций следования
@@ -170,29 +292,7 @@ paths:
           format: date
         example: 2023-12-31
 
-      - name: show_systems
-        in: query
-        description: |
-          [Cистеме кодирования](https://yandex.ru/dev/rasp/doc/ru/concepts/coding-system), в
-          которой необходимо получить коды станций (в элементе ответа `codes`, вложенном в
-          элемент `station`).
-
-          Возможные значения:
-
-          - `yandex` — система кодирования Яндекс Расписаний;
-          - `esr` — коды железнодорожных станций СНГ и стран Балтии из базы
-            [ЕСР](https://ru.wikipedia.org/wiki/Единая%20сетевая%20разметка);
-          - `all` — коды всех поддерживаемых систем кодирования.
-
-          По умолчанию элемент `station` не содержит элемента `codes`.
-        schema:
-          type: string
-          enum:
-            - yandex
-            - esr
-            - all
-        example: all
-
+      - $ref: "#/components/parameters/show_systems"
       - $ref: "#/components/parameters/format"
       - $ref: "#/components/parameters/lang"
 
@@ -263,7 +363,6 @@ paths:
             type: array
             items:
               $ref: "#/components/schemas/StationType"
-          required: false
           example: [station, platform]
         - name: transport_types
           in: query
@@ -285,7 +384,6 @@ paths:
             type: array
             items:
               $ref: "#/components/schemas/TransportType"
-          required: false
           example: [train, bus]
         - $ref: "#/components/parameters/offset"
         - $ref: "#/components/parameters/limit"
@@ -516,6 +614,11 @@ components:
       in: query
 
   schemas:
+    ScheduleResponse:
+      type: object
+      xml:
+        name: "response"
+
     ThreadResponse:
       type: object
       xml:
@@ -1247,3 +1350,27 @@ components:
           - express
           - esr
       example: yandex
+
+    show_systems:
+      name: show_systems
+      in: query
+      description: |
+        [Cистеме кодирования](https://yandex.ru/dev/rasp/doc/ru/concepts/coding-system), в
+        которой необходимо получить коды станций (в элементе ответа `codes`, вложенном в
+        элемент `station`).
+
+        Возможные значения:
+
+        - `yandex` — система кодирования Яндекс Расписаний;
+        - `esr` — коды железнодорожных станций СНГ и стран Балтии из базы
+          [ЕСР](https://ru.wikipedia.org/wiki/Единая%20сетевая%20разметка);
+        - `all` — коды всех поддерживаемых систем кодирования.
+
+        По умолчанию элемент `station` не содержит элемента `codes`.
+      schema:
+        type: string
+        enum:
+          - yandex
+          - esr
+          - all
+      example: all
