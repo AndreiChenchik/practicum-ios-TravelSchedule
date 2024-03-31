@@ -48,6 +48,12 @@ struct ContentView: View {
 
       Section("Fetch") {
         VStack(alignment: .leading) {
+          Button("Stations /nearest_stations/") { fetchNearesStations() }
+          Text("Ближайшие станции к координатам 59.945223, 30.365061")
+            .foregroundStyle(.secondary)
+        }
+
+        VStack(alignment: .leading) {
           Button("Settlement /nearest_settlement/") { fetchNearbySettlement() }
           Text("Ближайший город к координатам 59.945223, 30.365061")
             .foregroundStyle(.secondary)
@@ -98,10 +104,18 @@ private extension ContentView {
     }
   }
 
+  func fetchNearesStations() {
+    fetch {
+      let stations = try await apiClient.getNearestStations(latitude: 59.945223,
+                                                            longitude: 30.365061)
+      return stations.map { PreviewItem(id: $0.code, title: $0.title, description: $0.coordinates) }
+    }
+  }
+
   func fetchNearbySettlement() {
     fetch {
-      let settlement = try await apiClient.getNearbySettlement(latitude: 59.945223,
-                                                               longitude: 30.365061)
+      let settlement = try await apiClient.getNearestSettlement(latitude: 59.945223,
+                                                                longitude: 30.365061)
       return [PreviewItem(id: "Settlement",
                           title: settlement.title,
                           description: "\(settlement.latitude), \(settlement.longitude)")]
@@ -132,7 +146,23 @@ private extension ContentView {
 
 #if DEBUG
   struct PreviewClient: APIServiceProtocol {
-    func getNearbySettlement(latitude: Float, longitude: Float) async throws -> Settlement {
+    func getNearestStations(latitude _: Float, longitude _: Float) async throws -> [Station] {
+      try await Task.sleep(nanoseconds: 500_000_000)
+
+      return [
+        Station(title: "London",
+                code: "LON",
+                coordinates: "51.5074° N, 0.1278° W"),
+        Station(title: "Paris",
+                code: "PAR",
+                coordinates: "48.8566° N, 2.3522° E"),
+        Station(title: "Berlin",
+                code: "BER",
+                coordinates: "52.5200° N, 13.4050° E"),
+      ]
+    }
+
+    func getNearestSettlement(latitude: Float, longitude: Float) async throws -> Settlement {
       Settlement(title: "Minsk", latitude: 53.9045, longitude: 27.5615)
     }
 

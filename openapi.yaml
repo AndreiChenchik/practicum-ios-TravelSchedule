@@ -90,6 +90,103 @@ tags:
       url: https://yandex.ru/dev/rasp/doc/ru/
 
 paths:
+  /nearest_stations/:
+    get:
+      summary: Список ближайших станций
+      description: |
+        Запрос позволяет получить список
+        [станций](https://yandex.ru/dev/rasp/doc/ru/concepts/termin#station), находящихся в
+        указанном радиусе от указанной точки. Максимальное количество возвращаемых станций — 50.
+
+        Точка определяется географическими координатами (широтой и долготой) согласно
+        [WGS84](http://ru.wikipedia.org/wiki/WGS_84).
+      operationId: getNearestStations
+      tags:
+        - api
+      parameters:
+        - $ref: "#/components/parameters/latitudeRequired"
+        - $ref: "#/components/parameters/longitudeRequired"
+        - name: distance
+          in: query
+          description: Радиус, в котором следует искать станции, в километрах.
+          schema:
+            type: number
+            format: float
+            maximum: 50
+            default: 10
+          required: true
+        - name: station_types
+          in: query
+          explode: false
+          description: |
+            Типы запрашиваемых станций (несколько типов можно перечислить через запятую).
+
+            Поддерживаемые значения:
+
+            - `station` — станция;
+            - `platform` — платформа;
+            - `stop` — остановочный пункт;
+            - `checkpoint` — блок-пост;
+            - `post` — пост;
+            - `crossing` — разъезд;
+            - `overtaking_point` — обгонный пункт;
+            - `train_station` — вокзал;
+            - `airport` — аэропорт;
+            - `bus_station` — автовокзал;
+            - `bus_stop` — автобусная остановка;
+            - `unknown` — станция без типа;
+            - `port` — порт;
+            - `port_point` — портпункт;
+            - `wharf` — пристань;
+            - `river_port` — речной вокзал;
+            - `marine_station` — морской вокзал.
+          schema:
+            type: array
+            items:
+              $ref: "#/components/parameters/station_type"
+          required: false
+          example: [station, platform]
+        - name: transport_types
+          in: query
+          explode: false
+          description: |
+            Типы транспортного средства, для которых нужно искать станции. Несколько типов
+            одновременно можно указать через запятую, например, plane,train,bus.
+
+            Поддерживаемые значения:
+
+            - `plane` — самолет;
+            - `train` — поезд;
+            - `suburban` — электричка;
+            - `bus` — автобус;
+            - `sea` — морской транспорт;
+            - `river` — речной транспорт;
+            - `helicopter` — вертолет.
+          schema:
+            type: array
+            items:
+              $ref: "#/components/parameters/transport_type"
+          required: false
+          example: [train, bus]
+        - $ref: "#/components/parameters/offset"
+        - $ref: "#/components/parameters/limit"
+        - $ref: "#/components/parameters/format"
+        - $ref: "#/components/parameters/lang"
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NearestStationsResponse"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/NearestStationsResponse"
+        400:
+          $ref: "#/components/responses/400"
+        404:
+          $ref: "#/components/responses/404"
+
   /nearest_settlement/:
     get:
       summary: Ближайший город
@@ -102,22 +199,8 @@ paths:
       tags:
         - api
       parameters:
-        - name: lat
-          in: query
-          description: Широта согласно [WGS84](http://ru.wikipedia.org/wiki/WGS_84).
-          required: true
-          schema:
-            type: number
-            format: float
-          example: 54.106677
-        - name: lng
-          in: query
-          description: Долгота согласно [WGS84](http://ru.wikipedia.org/wiki/WGS_84).
-          required: true
-          schema:
-            type: number
-            format: float
-          example: 39.601726
+        - $ref: "#/components/parameters/latitudeRequired"
+        - $ref: "#/components/parameters/longitudeRequired"
         - name: distance
           in: query
           description: Радиус, в котором следует искать ближайший город, в километрах.
@@ -129,7 +212,6 @@ paths:
           example: 4.981302906703597
         - $ref: "#/components/parameters/format"
         - $ref: "#/components/parameters/lang"
-        - $ref: "#/components/parameters/system"
       responses:
         200:
           description: Success
@@ -138,9 +220,6 @@ paths:
               schema:
                 $ref: "#/components/schemas/NearestSettlementResponse"
             application/xml:
-              schema:
-                $ref: "#/components/schemas/NearestSettlementResponse"
-            text/html:
               schema:
                 $ref: "#/components/schemas/NearestSettlementResponse"
         400:
@@ -186,9 +265,6 @@ paths:
               schema:
                 $ref: "#/components/schemas/CarrierResponse"
             application/xml:
-              schema:
-                $ref: "#/components/schemas/CarrierResponse"
-            text/html:
               schema:
                 $ref: "#/components/schemas/CarrierResponse"
         400:
@@ -376,55 +452,12 @@ components:
             Значение пусто, если станция не железнодорожная.
           example: Елецкое
         station_type:
-          type: string
-          description: |
-            Тип станции.
-
-            Возможные значения:
-            - `station` — станция;
-            - `platform` — платформа;
-            - `stop` — остановочный пункт;
-            - `checkpoint` — блок-пост;
-            - `post` — пост;
-            - `crossing` — разъезд;
-            - `overtaking_point` — обгонный пункт;
-            - `train_station` — вокзал;
-            - `airport` — аэропорт;
-            - `bus_station` — автовокзал;
-            - `bus_stop` — автобусная остановка;
-            - `unknown` — станция без типа;
-            - `port` — порт;
-            - `port_point` — портпункт;
-            - `wharf` — пристань;
-            - `river_port` — речной вокзал;
-            - `marine_station` — морской вокзал.
-          example: station
-          enum:
-            - station
-            - platform
-            - stop
-            - checkpoint
-            - post
-            - crossing
-            - overtaking_point
-            - train_station
-            - airport
-            - bus_station
-            - bus_stop
-            - unknown
-            - port
-            - port_point
-            - wharf
-            - river_port
-            - marine_station
-            - ""
-          nullable: true
+          $ref: "#/components/parameters/station_type"
         longitude:
           oneOf:
             - type: number
               format: float
             - type: string
-          nullable: true
           description: Долгота станции.
           example: 38.123675
         latitude:
@@ -435,28 +468,7 @@ components:
           description: Широта станции.
           example: 51.780828
         transport_type:
-          type: string
-          description: |
-            Тип транспорта, следующего через станцию.
-
-            Возможные значения:
-            - `plane` — самолет;
-            - `train` — поезд;
-            - `suburban` — электричка;
-            - `bus` — автобус;
-            - `water`, `river` — речной транспорт;
-            - `sea` — морской транспорт;
-            - `helicopter` — вертолет.
-          enum:
-            - plane
-            - train
-            - suburban
-            - bus
-            - water
-            - river
-            - helicopter
-            - sea
-          example: train
+          $ref: "#/components/parameters/transport_type"
 
     StationSettlement:
       type: object
@@ -551,6 +563,19 @@ components:
           description: Юридический адрес перевозчика.
           example: Санкт-Петербург, ул. Строителей, д. 18
 
+    NearestStationsResponse:
+      type: object
+      xml:
+        name: "response"
+      properties:
+        stations:
+          description: Список станций.
+          type: array
+          items:
+            $ref: "#/components/schemas/NearestStation"
+        pagination:
+          $ref: "#/components/schemas/Pagination"
+
     NearestSettlementResponse:
       type: object
       xml:
@@ -583,27 +608,11 @@ components:
           example: Пронск
 
         lat:
-          type: number
-          format: float
-          description: Широта, на которой находится город.
-          example: 54.106677
-
+          $ref: "#/components/schemas/Latitude"
         lng:
-          type: number
-          format: float
-          description: Долгота, на которой находится город.
-          example: 39.601726
-
+          $ref: "#/components/schemas/Longitude"
         type:
-          type: string
-          description: |
-            Тип транспортного пункта:
-            - `station` — станция;
-            - `settlement` — поселение.
-          example: settlement
-          enum:
-            - settlement
-            - station
+          $ref: "#/components/schemas/SettlementType"
 
       required:
         - distance
@@ -713,6 +722,166 @@ components:
               description: URL запроса
               example: http://api.rasp.yandex.net/v1.0/search/?apikey=key&format=json&from=s96002137
 
+    NearestStation:
+      type: object
+      properties:
+        distance:
+          type: number
+          format: float
+          description: |
+            Расстояние от указанной в запросе точки до полученной в ответе станции.
+          example: 0.0
+        code:
+          type: string
+          description: Код станции в системе кодирования Яндекс Расписаний.
+          example: s96002137
+        station_type:
+          $ref: "#/components/parameters/station_type"
+        station_type_name:
+          type: string
+          description: |
+            Название типа станции, зависит от языка ответа. Возможные значения на русском —
+            в списке значений ключа `station_type`.
+          example: аэропорт
+        type_choices:
+          type: object
+          description: |
+            Типы расписаний, доступные для станции. Каждый тип описывается в отдельном объекте,
+            который содержит ссылки на мобильную и десктопную версию расписания.
+
+            Доступные типы:
+            - `schedule` — вид расписания по умолчанию;
+            - `tablo` — табло аэропорта;
+            - `train` — расписание железнодорожного вокзала;
+            - `suburban` — расписание электричек;
+            - `aeroex` — расписание аэроэкспрессов.
+          properties:
+            schedule:
+              $ref: "#/components/schemas/StationSchedule"
+            tablo:
+              $ref: "#/components/schemas/StationSchedule"
+            train:
+              $ref: "#/components/schemas/StationSchedule"
+            suburban:
+              $ref: "#/components/schemas/StationSchedule"
+            aeroex:
+              $ref: "#/components/schemas/StationSchedule"
+        transport_type:
+          $ref: "#/components/schemas/TransportType"
+        majority:
+          type: integer
+          description: |
+            Целое число, определяющее относительную важность станции в транспортном сообщении
+            региона, где 1 — высшая важность (например, главный вокзал города).
+          example: 5
+        title:
+          type: string
+          description: Название станции.
+          example: Павловск
+        popular_title:
+          type: string
+          description: Общепринятое название станции.
+          example: Павловск
+          nullable: true
+        short_title:
+          type: string
+          description: Короткое название станции.
+          example: Павловск
+          nullable: true
+        lat:
+          $ref: "#/components/schemas/Latitude"
+        lng:
+          $ref: "#/components/schemas/Longitude"
+        type:
+          $ref: "#/components/schemas/SettlementType"
+
+    Pagination:
+      type: object
+      description: Информация о постраничном выводе.
+      properties:
+        total:
+          type: integer
+          description: Общее количество элементов, удовлетворяющих условиям поиска.
+          example: 1
+        limit:
+          type: integer
+          description: |
+            Ограничение на количество элементов, которые Яндекс Расписания возвращают в ответ на
+            запрос. Ограничение можно задать в параметре `limit`.
+
+            Значение по умолчанию — 100.
+          default: 100
+        offset:
+          type: integer
+          description: |
+            Смещение относительно первого результата поиска. Смещение можно задать в параметре
+            `offset`.
+
+            Значение по умолчанию — 0.
+          default: 0
+
+    StationSchedule:
+      type: object
+      description: Расписание станции
+      properties:
+        desktop_url:
+          type: string
+          description: Ссылка на десктопную версию расписания
+          example: https://rasp.yandex.ru/station/9761931/schedule
+        touch_url:
+          type: string
+          description: Ссылка на мобильную версию расписания
+          example: https://t.rasp.yandex.ru/station/9761931/schedule
+
+    Latitude:
+      description: Широта согласно [WGS84](http://ru.wikipedia.org/wiki/WGS_84).
+      type: number
+      format: float
+      example: 54.106677
+
+    Longitude:
+      description: Долгота согласно [WGS84](http://ru.wikipedia.org/wiki/WGS_84).
+      type: number
+      format: float
+      example: 39.601726
+
+    SettlementType:
+      type: string
+      enum:
+        - settlement
+        - station
+      description: |
+        Тип пункта.
+
+        Возможные значения:
+        - `station` — станция;
+        - `settlement` — поселение.
+      example: settlement
+
+    TransportType:
+      type: string
+      enum:
+        - plane
+        - train
+        - suburban
+        - bus
+        - water
+        - river
+        - helicopter
+        - sea
+      description: |
+        Тип транспорта, следующего через станцию.
+
+        Возможные значения:
+        - `plane` — самолет;
+        - `train` — поезд;
+        - `suburban` — электричка;
+        - `bus` — автобус;
+        - `water`, `river` — речной транспорт;
+        - `sea` — морской транспорт;
+        - `helicopter` — вертолет.
+      example: train
+
   responses:
     400:
       description: |
@@ -775,6 +944,94 @@ components:
         enum:
           - json
           - xml
+
+    station_type:
+      in: query
+      name: station_type
+      schema:
+        type: string
+        enum:
+          - station
+          - platform
+          - stop
+          - checkpoint
+          - post
+          - crossing
+          - overtaking_point
+          - train_station
+          - airport
+          - bus_station
+          - bus_stop
+          - unknown
+          - port
+          - port_point
+          - wharf
+          - river_port
+          - marine_station
+          - ""
+      description: |
+        Тип станции.
+
+        Возможные значения:
+        - `station` — станция;
+        - `platform` — платформа;
+        - `stop` — остановочный пункт;
+        - `checkpoint` — блок-пост;
+        - `post` — пост;
+        - `crossing` — разъезд;
+        - `overtaking_point` — обгонный пункт;
+        - `train_station` — вокзал;
+        - `airport` — аэропорт;
+        - `bus_station` — автовокзал;
+        - `bus_stop` — автобусная остановка;
+        - `unknown` — станция без типа;
+        - `port` — порт;
+        - `port_point` — портпункт;
+        - `wharf` — пристань;
+        - `river_port` — речной вокзал;
+        - `marine_station` — морской вокзал.
+      example: station
+
+    offset:
+      in: query
+      name: offset
+      schema:
+        type: integer
+      description: |
+        Смещение относительно первого результата поиска. Например, если вам не нужны первые 10
+        результатов поиска, задайте для параметра значение «10».
+
+        Значение по умолчанию — 0.
+      example: 0
+
+    longitudeRequired:
+      name: lng
+      in: query
+      description: Долгота согласно [WGS84](http://ru.wikipedia.org/wiki/WGS_84).
+      required: true
+      schema:
+        $ref: "#/components/schemas/Longitude"
+      example: 39.601726
+
+    latitudeRequired:
+      name: lat
+      in: query
+      description: Широта согласно [WGS84](http://ru.wikipedia.org/wiki/WGS_84).
+      required: true
+      schema:
+        $ref: "#/components/schemas/Latitude"
+      example: 54.106677
+
+    limit:
+      in: query
+      name: limit
+      schema:
+        type: integer
+      description: |
+        Максимальное количество результатов поиска в ответе.
+
+        Значение по умолчанию — 100.
+      example: 100
 
     system:
       name: system
