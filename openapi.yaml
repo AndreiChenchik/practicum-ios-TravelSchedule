@@ -90,6 +90,111 @@ tags:
       url: https://yandex.ru/dev/rasp/doc/ru/
 
 paths:
+  /search/:
+    get:
+      summary: Расписание рейсов между станциями
+      description: |
+        Запрос позволяет получить список
+        [рейсов](https://yandex.ru/dev/rasp/doc/ru/concepts/termin#schedule), следующих от указанной
+        [станции](https://yandex.ru/dev/rasp/doc/ru/concepts/termin#station) отправления к указанной
+        станции прибытия и информацию по каждому рейсу.
+      operationId: getSearch
+      tags:
+        - api
+
+      parameters:
+      - name: from
+        in: query
+        description: |
+          Код станции отправления. Должен быть указан в
+          [системе кодирования](https://yandex.ru/dev/rasp/doc/ru/concepts/coding-system).
+
+          При использовании системы кодирования Яндекс Расписаний в данном параметре также можно
+          указать код населенного пункта.
+
+          Код населенного пункта или код станции можно получить из адресной строки, пользуясь
+          Яндекс Расписаниями. Например, из адресной строки:
+          - «http://rasp.yandex.ru/station/9600213» — код станции «s9600213»
+            (к числовому значению кода добавляется латинская буква «s»);
+          - «http://rasp.yandex.ru/city/146» — код населенного пункта «c146»
+            (к числовому значению кода добавляется латинская буква «c»).
+        schema:
+          type: string
+        example: s9600213
+        required: true
+
+      - name: to
+        in: query
+        description: |
+          Код станции прибытия. Должен быть указан в
+          [системе кодирования](https://yandex.ru/dev/rasp/doc/ru/concepts/coding-system).
+
+          При использовании системы кодирования Яндекс Расписаний в данном параметре также можно
+          указать код населенного пункта.
+
+          Код населенного пункта или код станции можно получить из адресной строки, пользуясь
+          Яндекс Расписаниями. Например, из адресной строки:
+
+          - «https://rasp.yandex.ru/station/9600213» — код станции «s9600213»
+          («s» от сокращенного «station»).
+          - «https://rasp.yandex.ru/city/146» — код населенного пункта «c146»
+          («c» от сокращенного «city»).
+        schema:
+          type: string
+        example: c146
+        required: true
+
+      - name: add_days_mask
+        in: query
+        description: |
+          Признак, который указывает, что для каждой нитки в ответе следует вернуть календарь
+          хождения — элемент `schedule`, вложенный в элемент `segments`.
+
+          Поддерживаемые значения:
+
+          - `false` — календарь возвращать не нужно (значение по умолчанию).
+          - `true` — для каждой нитки следует вернуть календарь хождения.
+        schema:
+          type: boolean
+
+      - name: transfers
+        in: query
+        description: |
+          Признак, разрешающий добавить к результатам поиска маршруты с пересадками.
+
+          Поддерживаемые значения:
+
+          - `false` — в результатах поиска не должно быть маршрутов с пересадками (значение по
+            умолчанию).
+          - `true` — найденные маршруты с пересадками следует добавить к результатам поиска.
+        schema:
+          type: boolean
+
+      - $ref: "#/components/parameters/result_timezone"
+      - $ref: "#/components/parameters/transport_types"
+      - $ref: "#/components/parameters/schedule_date"
+      - $ref: "#/components/parameters/format"
+      - $ref: "#/components/parameters/lang"
+      - $ref: "#/components/parameters/system"
+      - $ref: "#/components/parameters/show_systems"
+      - $ref: "#/components/parameters/offset"
+      - $ref: "#/components/parameters/limit"
+
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SearchResponse"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/SearchResponse"
+        400:
+          $ref: "#/components/responses/400"
+        404:
+          $ref: "#/components/responses/404"
+
   /schedule/:
     get:
       summary: Расписание рейсов по станции
@@ -111,42 +216,6 @@ paths:
         required: true
         schema:
           type: string
-
-      - name: date
-        in: query
-        description: |
-          Дата, на которую необходимо получить список рейсов. Должна быть указана в формате,
-          соответствующем стандарту [ISO 8601](https://ru.wikipedia.org/wiki/ISO_8601).
-          Например, YYYY-MM-DD.
-
-          Если в запросе указана конкретная дата, в выдаче будут показаны все будущие рейсы, в том
-          числе с пересадками.
-
-          Если запрос передан без даты, в выдаче будут показаны только прямые рейсы на все даты. В
-          этом случае рейсы с пересадками не попадут в выдачу.
-        schema:
-          type: string
-          format: date
-        example: 2023-12-31
-
-      - name: transport_types
-        in: query
-        explode: false
-        description: |
-          Тип транспортного средства. Возможные значения:
-
-          - `plane` — самолет;
-          - `train` — поезд;
-          - `suburban` — электричка;
-          - `bus` — автобус;
-          - `water` — морской транспорт;
-          - `helicopter` — вертолет.
-
-          По умолчанию возвращается список рейсов по всем типам транспортных средств.
-        schema:
-          type: array
-          items:
-            $ref: "#/components/schemas/TransportType"
 
       - name: direction
         in: query
@@ -178,20 +247,9 @@ paths:
             - departure
             - arrival
 
-      - name: result_timezone
-        in: query
-        description: |
-          Часовой пояс, для которого следует указывать даты и времена в ответе. Если параметр не
-          передан, каждая дата и время в ответе будут указаны в часовом поясе соответствующей
-          станции.
-
-          Часовые пояса следует указывать с помощью идентификаторов
-          [базы данных tz](https://ru.wikipedia.org/wiki/Tz_database). В английской Википедии
-          приведен список идентификаторов из последней версии этой базы данных (в столбце «TZ»
-          таблицы).
-        schema:
-          type: string
-
+      - $ref: "#/components/parameters/result_timezone"
+      - $ref: "#/components/parameters/transport_types"
+      - $ref: "#/components/parameters/schedule_date"
       - $ref: "#/components/parameters/format"
       - $ref: "#/components/parameters/lang"
       - $ref: "#/components/parameters/system"
@@ -364,27 +422,8 @@ paths:
             items:
               $ref: "#/components/schemas/StationType"
           example: [station, platform]
-        - name: transport_types
-          in: query
-          explode: false
-          description: |
-            Типы транспортного средства, для которых нужно искать станции. Несколько типов
-            одновременно можно указать через запятую, например, plane,train,bus.
 
-            Поддерживаемые значения:
-
-            - `plane` — самолет;
-            - `train` — поезд;
-            - `suburban` — электричка;
-            - `bus` — автобус;
-            - `sea` — морской транспорт;
-            - `river` — речной транспорт;
-            - `helicopter` — вертолет.
-          schema:
-            type: array
-            items:
-              $ref: "#/components/schemas/TransportType"
-          example: [train, bus]
+        - $ref: "#/components/parameters/transport_types"
         - $ref: "#/components/parameters/offset"
         - $ref: "#/components/parameters/limit"
         - $ref: "#/components/parameters/format"
@@ -614,6 +653,11 @@ components:
       in: query
 
   schemas:
+    SearchResponse:
+      type: object
+      xml:
+        name: "response"
+
     ScheduleResponse:
       type: object
       xml:
@@ -1374,3 +1418,59 @@ components:
           - esr
           - all
       example: all
+
+    schedule_date:
+      name: date
+      in: query
+      description: |
+        Дата, на которую необходимо получить список рейсов. Должна быть указана в формате,
+        соответствующем стандарту [ISO 8601](https://ru.wikipedia.org/wiki/ISO_8601).
+        Например, YYYY-MM-DD.
+
+        Если в запросе указана конкретная дата, в выдаче будут показаны все будущие рейсы, в том
+        числе с пересадками.
+
+        Если запрос передан без даты, в выдаче будут показаны только прямые рейсы на все даты. В
+        этом случае рейсы с пересадками не попадут в выдачу.
+      schema:
+        type: string
+        format: date
+      example: 2023-12-31
+
+    transport_types:
+      name: transport_types
+      in: query
+      explode: false
+      description: |
+        Типы транспортного средства, для которых нужно искать станции. Несколько типов
+        одновременно можно указать через запятую, например, plane,train,bus.
+
+        Поддерживаемые значения:
+
+        - `plane` — самолет;
+        - `train` — поезд;
+        - `suburban` — электричка;
+        - `bus` — автобус;
+        - `sea` — морской транспорт;
+        - `river` — речной транспорт;
+        - `helicopter` — вертолет.
+      schema:
+        type: array
+        items:
+          $ref: "#/components/schemas/TransportType"
+      example: [train, bus]
+
+    result_timezone:
+      name: result_timezone
+      in: query
+      description: |
+        Часовой пояс, для которого следует указывать даты и времена в ответе. Если параметр не
+        передан, каждая дата и время в ответе будут указаны в часовом поясе соответствующей
+        станции.
+
+        Часовые пояса следует указывать с помощью идентификаторов
+        [базы данных tz](https://ru.wikipedia.org/wiki/Tz_database). В английской Википедии
+        приведен список идентификаторов из последней версии этой базы данных (в столбце «TZ»
+        таблицы).
+      schema:
+        type: string
