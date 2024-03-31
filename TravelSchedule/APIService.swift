@@ -9,6 +9,7 @@ import OpenAPIRuntime
 import OpenAPIURLSession
 
 protocol APIServiceProtocol {
+  func getNearbySettlement(latitude: Float, longitude: Float) async throws -> Settlement
   func getAllStations() async throws -> [Station]
   func getCarrier(code: String) async throws -> Carrier
   func getCopyright() async throws -> String
@@ -20,6 +21,15 @@ enum APIError: Error {
 
 struct APIService: APIServiceProtocol {
   let client: Client
+
+  func getNearbySettlement(latitude: Float, longitude: Float) async throws -> Settlement {
+    let response = try await client.getNearestSettlement(
+      query: .init(lat: latitude, lng: longitude)
+    )
+    let body = try response.ok.body.json
+
+    return Settlement(title: body.title, latitude: body.lat, longitude: body.lng)
+  }
 
   func getCarrier(code: String) async throws -> Carrier {
     let response = try await client.getCarrier(query: .init(code: code))
@@ -62,11 +72,11 @@ struct APIService: APIServiceProtocol {
                      coordinates: coordinates)
     }
   }
-  
+
   func getCopyright() async throws -> String {
     let response = try await client.getCopyright()
     let body = try response.ok.body.json
-    
+
     return body.copyright?.text ?? "Unknown"
   }
 }

@@ -20,6 +20,7 @@
 		F26C6A432BB7260500A54993 /* StationsListFixMiddleware.swift in Sources */ = {isa = PBXBuildFile; fileRef = F26C6A422BB7260500A54993 /* StationsListFixMiddleware.swift */; };
 		F26C6A482BB72C8C00A54993 /* Station.swift in Sources */ = {isa = PBXBuildFile; fileRef = F26C6A472BB72C8C00A54993 /* Station.swift */; };
 		F26C6A4A2BB870D400A54993 /* Carrier.swift in Sources */ = {isa = PBXBuildFile; fileRef = F26C6A492BB870D400A54993 /* Carrier.swift */; };
+		F26C6A4E2BB9C17700A54993 /* Settlement.swift in Sources */ = {isa = PBXBuildFile; fileRef = F26C6A4D2BB9C17700A54993 /* Settlement.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -35,6 +36,7 @@
 		F26C6A422BB7260500A54993 /* StationsListFixMiddleware.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StationsListFixMiddleware.swift; sourceTree = "<group>"; };
 		F26C6A472BB72C8C00A54993 /* Station.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Station.swift; sourceTree = "<group>"; };
 		F26C6A492BB870D400A54993 /* Carrier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Carrier.swift; sourceTree = "<group>"; };
+		F26C6A4D2BB9C17700A54993 /* Settlement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settlement.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -112,6 +114,7 @@
 			children = (
 				F26C6A472BB72C8C00A54993 /* Station.swift */,
 				F26C6A492BB870D400A54993 /* Carrier.swift */,
+				F26C6A4D2BB9C17700A54993 /* Settlement.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -198,6 +201,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F26C6A4E2BB9C17700A54993 /* Settlement.swift in Sources */,
 				F26C6A4A2BB870D400A54993 /* Carrier.swift in Sources */,
 				F26C6A432BB7260500A54993 /* StationsListFixMiddleware.swift in Sources */,
 				F26C6A1D2BB604FC00A54993 /* ContentView.swift in Sources */,
