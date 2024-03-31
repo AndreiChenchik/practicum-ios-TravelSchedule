@@ -11,6 +11,7 @@ import OpenAPIURLSession
 protocol APIServiceProtocol {
   func getAllStations() async throws -> [Station]
   func getCarrier(code: String) async throws -> Carrier
+  func getCopyright() async throws -> String
 }
 
 enum APIError: Error {
@@ -60,5 +61,12 @@ struct APIService: APIServiceProtocol {
                      code: $0.codes?.yandex_code ?? "Unknown",
                      coordinates: coordinates)
     }
+  }
+  
+  func getCopyright() async throws -> String {
+    let response = try await client.getCopyright()
+    let body = try response.ok.body.json
+    
+    return body.copyright?.text ?? "Unknown"
   }
 }

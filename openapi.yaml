@@ -453,7 +453,7 @@ components:
           description: Название перевозчика.
           example: РЖД
         code:
-          type: number
+          type: integer
           description: |
             Код перевозчика в указанной системе кодирования
             (по умолчанию — в системе Яндекс Расписаний.)

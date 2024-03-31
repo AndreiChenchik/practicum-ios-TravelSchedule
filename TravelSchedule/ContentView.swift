@@ -99,7 +99,19 @@ private extension ContentView {
   }
 
   func fetchCopyright() {
-    fetchStations()
+    isInFlightRequest = true
+    items = []
+
+    Task {
+      do {
+        let copy = try await apiClient.getCopyright()
+        items = [PreviewItem(id: "CP", title: "Copyright", description: copy)]
+      } catch {
+        print(error)
+      }
+
+      isInFlightRequest = false
+    }
   }
 }
 
@@ -123,6 +135,10 @@ private extension ContentView {
                 code: "BER",
                 coordinates: "52.5200° N, 13.4050° E"),
       ]
+    }
+
+    func getCopyright() async throws -> String {
+      "© 2024 TravelSchedule"
     }
   }
 
