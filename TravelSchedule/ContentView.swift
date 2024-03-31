@@ -39,51 +39,69 @@ struct ContentView: View {
 
   @State private var items: [PreviewItem] = []
   @State private var isInFlightRequest = false
+  @State private var searchText = ""
+
+  var filteredItems: [PreviewItem] {
+    if searchText.isEmpty {
+      return items
+    }
+
+    return items
+      .filter {
+        let searchContent = $0.id + " " + $0.title + " " + ($0.description ?? "")
+        return $0.title.localizedCaseInsensitiveContains(searchText)
+      }
+  }
 
   var body: some View {
-    Form {
-      Section("Status") {
-        Text(isInFlightRequest ? "Fetching data..." : "Idle")
+    NavigationView {
+      Form {
+        Section("Status") {
+          Text(isInFlightRequest ? "Fetching data..." : "Idle")
+        }
+
+        Section("Fetch") {
+          VStack(alignment: .leading) {
+            Button("Stations /nearest_stations/") { fetchNearesStations() }
+            Text("Ближайшие станции к координатам 59.945223, 30.365061")
+              .foregroundStyle(.secondary)
+          }
+
+          VStack(alignment: .leading) {
+            Button("Settlement /nearest_settlement/") { fetchNearbySettlement() }
+            Text("Ближайший город к координатам 59.945223, 30.365061")
+              .foregroundStyle(.secondary)
+          }
+
+          VStack(alignment: .leading) {
+            Button("Carrier /carrier/") { fetchCarrier() }
+            Text("Загрузит информацию о перевозчике с кодом 680")
+              .foregroundStyle(.secondary)
+          }
+
+          VStack(alignment: .leading) {
+            Button("Stations /stations_list/") { fetchStations() }
+            Text("Загрузит список всех станций")
+              .foregroundStyle(.secondary)
+          }
+
+          VStack(alignment: .leading) {
+            Button("Copyright /copyright/") { fetchCopyright() }
+            Text("Загрузит информацию о копирайте")
+              .foregroundStyle(.secondary)
+          }
+        }
+        .disabled(isInFlightRequest)
+
+        if !filteredItems.isEmpty {
+          Section("Fetched (first 10 max)") {
+            ForEach(filteredItems.prefix(10), content: PreviewItemView.init)
+          }
+        }
       }
-
-      Section("Fetch") {
-        VStack(alignment: .leading) {
-          Button("Stations /nearest_stations/") { fetchNearesStations() }
-          Text("Ближайшие станции к координатам 59.945223, 30.365061")
-            .foregroundStyle(.secondary)
-        }
-
-        VStack(alignment: .leading) {
-          Button("Settlement /nearest_settlement/") { fetchNearbySettlement() }
-          Text("Ближайший город к координатам 59.945223, 30.365061")
-            .foregroundStyle(.secondary)
-        }
-
-        VStack(alignment: .leading) {
-          Button("Carrier /carrier/") { fetchCarrier() }
-          Text("Загрузит информацию о перевозчике с кодом 680")
-            .foregroundStyle(.secondary)
-        }
-
-        VStack(alignment: .leading) {
-          Button("Stations /stations_list/") { fetchStations() }
-          Text("Загрузит список всех станций")
-            .foregroundStyle(.secondary)
-        }
-
-        VStack(alignment: .leading) {
-          Button("Copyright /copyright/") { fetchCopyright() }
-          Text("Загрузит информацию о копирайте")
-            .foregroundStyle(.secondary)
-        }
-      }
-      .disabled(isInFlightRequest)
-
-      if !items.isEmpty {
-        Section("Fetched") {
-          ForEach(items, content: PreviewItemView.init)
-        }
-      }
+      .navigationBarTitleDisplayMode(.inline)
+      .navigationTitle("API Яндекс Расписаний")
+      .searchable(text: $searchText)
     }
   }
 }
