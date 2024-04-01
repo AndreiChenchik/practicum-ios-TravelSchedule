@@ -120,7 +120,7 @@ paths:
             (к числовому значению кода добавляется латинская буква «c»).
         schema:
           type: string
-        example: s9600213
+        example: s9600766
         required: true
 
       - name: to
@@ -141,7 +141,7 @@ paths:
           («c» от сокращенного «city»).
         schema:
           type: string
-        example: c146
+        example: s2000009
         required: true
 
       - name: add_days_mask
@@ -315,7 +315,6 @@ paths:
             (к числовому значению кода добавляется латинская буква «c»).
         schema:
           type: string
-        example: s9600213
 
       - name: to
         in: query
@@ -335,21 +334,8 @@ paths:
           («c» от сокращенного «city»).
         schema:
           type: string
-        example: c146
 
-      - name: date
-        in: query
-        description: |
-          Дата, на которую необходимо получить список станций следования. Должна быть указана в
-          формате, соответствующем стандарту [ISO 8601](https://ru.wikipedia.org/wiki/ISO_8601).
-          Например, YYYY-MM-DD.
-
-          По умолчанию возвращается список станций следования на первую дату хождения нитки.
-        schema:
-          type: string
-          format: date
-        example: 2023-12-31
-
+      - $ref: "#/components/parameters/schedule_date"
       - $ref: "#/components/parameters/show_systems"
       - $ref: "#/components/parameters/format"
       - $ref: "#/components/parameters/lang"
@@ -667,6 +653,170 @@ components:
       type: object
       xml:
         name: "response"
+
+      properties:
+        except_days:
+          type: string
+          description: |
+            Дни, в которые нитка не курсирует (даже если они входят в множество, описанное элементом
+            `days`).
+        arrival_date:
+          type: string
+          description: |
+            Дата прибытия на станцию, указанную в параметре `to`.
+
+            Включается в ответ только если нитка не является _интервальной_.
+
+        from:
+          type: string
+          description: Пункт отправления, указанный в параметре `from`.
+
+        uid:
+          type: string
+          description: Идентификатор нитки, принятый в Яндекс Расписаниях.
+
+        title:
+          type: string
+          description: |
+            Название нитки, составленное из полных названий первой и последней станций следования.
+
+        interval:
+          type: object
+          description: Информация о движении по интервальной нитке.
+          properties:
+            density:
+              type: string
+              description: Описание периодичности движения в свободной форме.
+
+            end_time:
+              type: string
+              description: |
+                Дата и время окончания движения по нитке. Всегда указывается в часовом поясе станции
+                отправления.
+
+                Могут быть указаны в одном из двух форматов:
+
+                - `YYYY-MM-DD`, если в запросе не был передан параметр `date`.
+                - `YYYY-MM-DDTHH:MM:SS`, если параметр `date` был передан.
+
+            begin_time:
+              type: string
+              description: |
+                Дата и время начала движения по нитке. Всегда указывается в часовом поясе станции
+                отправления.
+
+                Могут быть указаны в одном из двух форматов:
+
+                - `YYYY-MM-DD`, если в запросе не был передан параметр `date`.
+                - `YYYY-MM-DDTHH:MM:SS`, если параметр `date` был передан.
+
+        departure_date:
+          type: string
+          description: |
+            Дата отправления со станции, указанной в параметре `from`.
+
+            Включается в ответ только если нитка не является _интервальной_.
+
+        start_time:
+          type: string
+          description: |
+            Время отправления с первой станции следования по местному времени станции.
+
+            Включается в ответ только если нитка не является _интервальной_.
+
+        number:
+          type: string
+          description: Номер [рейса](https://yandex.ru/dev/rasp/doc/ru/concepts/termin#schedule).
+
+        days:
+          type: string
+          description: Дни курсирования нитки.
+
+        to:
+          type: string
+          description: Пункт прибытия, указанный в параметре `to`.
+
+        carrier:
+          $ref: "#/components/schemas/Carrier"
+
+        transport_type:
+          $ref: "#/components/schemas/TransportType"
+
+        stops:
+          description: Список станций следования.
+          type: array
+          items:
+            type: object
+            properties:
+              arrival:
+                type: string
+                description: |
+                  Время прибытия, в формате ISO 8601 (YYYY-MM-DDThh:mm:ss±hh:mm).
+
+                  Если параметр `result_timezone` не был передан, указывается в часовом поясе
+                  станции.
+
+              departure:
+                type: string
+                description: |
+                  Время отправления, в формате ISO 8601 (YYYY-MM-DDThh:mm:ss±hh:mm).
+
+                  Если параметр `result_timezone` не был передан, указывается в часовом поясе
+                  станции.
+
+              duration:
+                type: integer
+                description: Время в пути между станциями (в секундах).
+
+              stop_time:
+                type: integer
+                description: Продолжительность остановки (в секундах).
+
+              station:
+                $ref: "#/components/schemas/Station"
+
+              terminal:
+                type: string
+                nullable: true
+                description: |
+                  Терминал аэропорта (например, «D»).
+
+                  Принимает значение `null`, если информации о терминале нет.
+
+              platform:
+                type: string
+                nullable: true
+                description: |
+                  Платформа или путь, с которого отправляется рейс (например, «3 путь»).
+
+                  Пустая строка значит, что информации о платформе или пути нет.
+
+        vehicle:
+          type: string
+          description: Название транспортного средства.
+
+        start_date:
+          type: string
+          description: Дата отправления с первой станции следования.
+
+        transport_subtype:
+          type: object
+          description: Информация о подтипе транспортного средства.
+
+        express_type:
+          type: string
+          enum:
+            - express
+            - aeroexpress
+          nullable: true
+          description: |
+            Признак экспресса или аэроэкспресса. Значение по умолчанию — `null`.
+
+            Если тип транспорта — электричка (ключ `transport_type` возвращен со значением
+            `suburban`), принимает одно из значений:
+
+            - `express` — экспресс-рейс;
+            - `aeroexpress` — рейс, курсирующий между городом и аэропортом.
 
     NearestStationsResponse:
       type: object
@@ -1189,6 +1339,10 @@ components:
           type: string
           description: Название станции.
           example: Касторная-Новая
+        code:
+          type: string
+          description: Код станции.
+          example: 9761931
         codes:
           $ref: "#/components/schemas/StationCodes"
         direction:
@@ -1435,7 +1589,6 @@ components:
       schema:
         type: string
         format: date
-      example: 2023-12-31
 
     transport_types:
       name: transport_types
@@ -1458,7 +1611,6 @@ components:
         type: array
         items:
           $ref: "#/components/schemas/TransportType"
-      example: [train, bus]
 
     result_timezone:
       name: result_timezone

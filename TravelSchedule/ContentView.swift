@@ -62,6 +62,12 @@ struct ContentView: View {
 
         Section("Fetch") {
           VStack(alignment: .leading) {
+            Button("Thread /thread/") { fetchThread() }
+            Text("Загрузить нить 6307_0_9601681_g24_4")
+              .foregroundStyle(.secondary)
+          }
+
+          VStack(alignment: .leading) {
             Button("Stations /nearest_stations/") { fetchNearesStations() }
             Text("Ближайшие станции к координатам 59.945223, 30.365061")
               .foregroundStyle(.secondary)
@@ -122,6 +128,13 @@ private extension ContentView {
     }
   }
 
+  func fetchThread() {
+    fetch {
+      let threads = try await apiClient.getThread(uid: "6307_0_9601681_g24_4")
+      return threads.map { PreviewItem(id: $0.code, title: $0.title, description: $0.coordinates) }
+    }
+  }
+
   func fetchNearesStations() {
     fetch {
       let stations = try await apiClient.getNearestStations(latitude: 59.945223,
@@ -164,10 +177,22 @@ private extension ContentView {
 
 #if DEBUG
   struct PreviewClient: APIServiceProtocol {
-    func getNearestStations(latitude _: Float, longitude _: Float) async throws -> [Station] {
-      try await Task.sleep(nanoseconds: 500_000_000)
-
+    func getThread(uid _: String) async throws -> [Station] {
       return [
+        Station(title: "London",
+                code: "LON",
+                coordinates: "51.5074° N, 0.1278° W"),
+        Station(title: "Paris",
+                code: "PAR",
+                coordinates: "48.8566° N, 2.3522° E"),
+        Station(title: "Berlin",
+                code: "BER",
+                coordinates: "52.5200° N, 13.4050° E"),
+      ]
+    }
+
+    func getNearestStations(latitude _: Float, longitude _: Float) async throws -> [Station] {
+      [
         Station(title: "London",
                 code: "LON",
                 coordinates: "51.5074° N, 0.1278° W"),
@@ -189,9 +214,7 @@ private extension ContentView {
     }
 
     func getAllStations() async throws -> [Station] {
-      try await Task.sleep(nanoseconds: 500_000_000)
-
-      return [
+      [
         Station(title: "London",
                 code: "LON",
                 coordinates: "51.5074° N, 0.1278° W"),
