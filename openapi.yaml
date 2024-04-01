@@ -216,6 +216,7 @@ paths:
         required: true
         schema:
           type: string
+        example: s9600766
 
       - name: direction
         in: query
@@ -648,6 +649,46 @@ components:
       type: object
       xml:
         name: "response"
+      properties:
+        date:
+          type: string
+          description: |
+            Дата, на которую получен список рейсов.
+            Принимает значение `null`, если в запросе не указан параметр `date`.
+
+        pagination:
+          $ref: "#/components/schemas/Pagination"
+
+        station:
+          $ref: "#/components/schemas/Station"
+
+        schedule:
+          type: array
+          items:
+            $ref: "#/components/schemas/ScheduleItem"
+
+        direction:
+          type: object
+          properties:
+            title:
+              type: string
+              description: |
+                Название направления.
+
+                Возможные значения: «прибытие», «все направления», «на Москву», «на Шалю» и т. д.
+            code:
+              type: string
+              description: |
+                Код направления.
+
+                Может принимать значения:
+
+                - `arrival` — код направления с названием «прибытие», для рейсов электричек,
+                  прибывающих на станцию.
+                - `на Москву` (`на Шалю` и т. д.) — код направления с названием, для электричек
+                  курсирующих по такому направлению.
+                - `all` — код направления с названием «все направления», для рейсов, отправляющихся
+                  по всем возможным направлениям.
 
     ThreadResponse:
       type: object
@@ -660,6 +701,7 @@ components:
           description: |
             Дни, в которые нитка не курсирует (даже если они входят в множество, описанное элементом
             `days`).
+
         arrival_date:
           type: string
           description: |
@@ -739,9 +781,6 @@ components:
         carrier:
           $ref: "#/components/schemas/Carrier"
 
-        transport_type:
-          $ref: "#/components/schemas/TransportType"
-
         stops:
           description: Список станций следования.
           type: array
@@ -791,13 +830,16 @@ components:
 
                   Пустая строка значит, что информации о платформе или пути нет.
 
-        vehicle:
-          type: string
-          description: Название транспортного средства.
-
         start_date:
           type: string
           description: Дата отправления с первой станции следования.
+
+        transport_type:
+          $ref: "#/components/schemas/TransportType"
+
+        vehicle:
+          type: string
+          description: Название транспортного средства.
 
         transport_subtype:
           type: object
@@ -983,6 +1025,121 @@ components:
               type: string
               description: URL запроса
               example: http://api.rasp.yandex.net/v1.0/search/?apikey=key&format=json&from=s96002137
+
+    ScheduleItem:
+      type: object
+      properties:
+        except_days:
+          type: string
+          description: |
+            Дни, в которые нитка не курсирует (даже если они входят в множество, описанное элементом
+            days).
+
+        arrival:
+          type: string
+          description: |
+            Время прибытия, в формате ISO 8601 (YYYY-MM-DDThh:mm:ss±hh:mm).
+
+            Если параметр `result_timezone` не был передан, указывается в часовом поясе станции.
+
+        thread:
+          $ref: "#/components/schemas/Thread"
+
+        is_fuzzy:
+          type: boolean
+          description: |
+            Признак неточности времени отправления и времени прибытия. Возможные значения:
+
+            - `true` — время прибытия и время отправления указаны неточно;
+            - `false` — время прибытия и время отправления указан точно.
+
+        days:
+          type: string
+          description: |
+            Дни курсирования нитки.
+
+        stops:
+          type: string
+          description: |
+            Станции следования рейса, на которых совершается остановка. Описывается в свободной
+            форме. Например, значение `везде` значит, что остановка совершается на всех станциях
+            следования.
+
+            Пустая строка значит, что нитка нигде не останавливается между начальной и конечной
+            станциями.
+
+        departure:
+          type: string
+          description: |
+            Время отправления, в формате ISO 8601 (YYYY-MM-DDThh:mm:ss±hh:mm).
+
+            Если параметр `result_timezone` не был передан, указывается в часовом поясе станции.
+
+        terminal:
+          type: string
+          description: |
+            Терминал аэропорта (например, «D»).
+
+            Принимает значение `null`, если информации о терминале нет.
+
+        platform:
+          type: string
+          description: |
+            Платформа или путь, с которого отправляется рейс (например, «3 путь»).
+
+            Пустая строка значит, что информации о платформе или пути нет.
+
+    Thread:
+      tyte: object
+      description: Информация о нитке.
+      properties:
+        uid:
+          type: string
+          description: Идентификатор нитки, принятый в Яндекс Расписаниях.
+
+        title:
+          type: string
+          description: |
+            Название нитки. Составляется из полных названий первой и последней станций следования.
+
+        number:
+          type: string
+          description: Номер рейса.
+
+        short_title:
+          type: string
+          description: |
+            Короткое название нитки. Составляется из коротких названий первой и последней станций
+            следования.
+
+        carrier:
+          $ref: "#/components/schemas/Carrier"
+
+        transport_type:
+          $ref: "#/components/schemas/TransportType"
+
+        vehicle:
+          type: string
+          description: Название транспортного средства.
+
+        transport_subtype:
+          type: object
+          description: Информация о подтипе транспортного средства.
+
+        express_type:
+          type: string
+          enum:
+            - express
+            - aeroexpress
+          nullable: true
+          description: |
+            Признак экспресса или аэроэкспресса. Значение по умолчанию — `null`.
+
+            Если тип транспорта — электричка (ключ `transport_type` возвращен со значением
+            `suburban`), принимает одно из значений:
+
+            - `express` — экспресс-рейс;
+            - `aeroexpress` — рейс, курсирующий между городом и аэропортом.
 
     CarrierCodes:
       type: object
@@ -1341,8 +1498,8 @@ components:
           example: Касторная-Новая
         code:
           type: string
-          description: Код станции.
-          example: 9761931
+          description: Код станции в системе кодирования Яндекс Расписаний.
+          example: s9637063
         codes:
           $ref: "#/components/schemas/StationCodes"
         direction:

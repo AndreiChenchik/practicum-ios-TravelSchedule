@@ -46,11 +46,7 @@ struct ContentView: View {
       return items
     }
 
-    return items
-      .filter {
-        let searchContent = $0.id + " " + $0.title + " " + ($0.description ?? "")
-        return $0.title.localizedCaseInsensitiveContains(searchText)
-      }
+    return items.filter { $0.title.localizedCaseInsensitiveContains(searchText) }
   }
 
   var body: some View {
@@ -61,6 +57,12 @@ struct ContentView: View {
         }
 
         Section("Fetch") {
+          VStack(alignment: .leading) {
+            Button("Schedule /schedule/") { fetchSchedule() }
+            Text("Загрузить расписание s9600766")
+              .foregroundStyle(.secondary)
+          }
+
           VStack(alignment: .leading) {
             Button("Thread /thread/") { fetchThread() }
             Text("Загрузить нить 6307_0_9601681_g24_4")
@@ -128,6 +130,13 @@ private extension ContentView {
     }
   }
 
+  func fetchSchedule() {
+    fetch {
+      let threads = try await apiClient.getSchedule(station: "s9600766")
+      return threads.map { PreviewItem(id: $0.uid, title: $0.title, description: $0.days) }
+    }
+  }
+
   func fetchThread() {
     fetch {
       let threads = try await apiClient.getThread(uid: "6307_0_9601681_g24_4")
@@ -177,6 +186,14 @@ private extension ContentView {
 
 #if DEBUG
   struct PreviewClient: APIServiceProtocol {
+    func getSchedule(station _: String) async throws -> [Thread] {
+      [
+        Thread(uid: "6307_0_9601681_g24_4",
+               title: "Thread 6307_0_9601681_g24_4",
+               days: "All"),
+      ]
+    }
+
     func getThread(uid _: String) async throws -> [Station] {
       return [
         Station(title: "London",

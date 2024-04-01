@@ -9,6 +9,7 @@ import OpenAPIRuntime
 import OpenAPIURLSession
 
 protocol APIServiceProtocol {
+  func getSchedule(station: String) async throws -> [Thread]
   func getThread(uid: String) async throws -> [Station]
   func getNearestStations(latitude: Float, longitude: Float) async throws -> [Station]
   func getNearestSettlement(latitude: Float, longitude: Float) async throws -> Settlement
@@ -24,6 +25,18 @@ enum APIError: Error {
 struct APIService: APIServiceProtocol {
   let client: Client
 
+  func getSchedule(station: String) async throws -> [Thread] {
+    let response = try await client.getSchedule(query: .init(station: station))
+    let body = try response.ok.body.json
+
+    return body.schedule?.compactMap {
+      
+      Thread(uid: $0.thread?.uid ?? "Unknown",
+             title: $0.thread?.title ?? "Unknown",
+             days: $0.days ?? "Unknown")
+    } ?? []
+  }
+  
   func getThread(uid: String) async throws -> [Station] {
     let response = try await client.getThread(query: .init(uid: uid))
     let body = try response.ok.body.json
