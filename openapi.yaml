@@ -645,6 +645,38 @@ components:
       xml:
         name: "response"
 
+      properties:
+        pagination:
+          $ref: "#/components/schemas/Pagination"
+
+        search:
+          type: object
+          description: Указанная в запросе дата, пункт отправления и пункт прибытия.
+          properties:
+            date:
+              type: string
+              description: Дата, на которую получен список рейсов, в формате «YYYY-MM-DD».
+
+            from:
+              $ref: "#/components/schemas/Station"
+
+            to:
+              $ref: "#/components/schemas/Station"
+
+            segments:
+              type: array
+              description: Список найденных рейсов.
+              items:
+                $ref: "#/components/schemas/Segment"
+
+            interval_segments:
+              type: array
+              description: |
+                Список интервальных рейсов, движение по которым идет регулярно, но без определенного
+                расписания.
+              items:
+                $ref: "#/components/schemas/Segment"
+
     ScheduleResponse:
       type: object
       xml:
@@ -1026,6 +1058,109 @@ components:
               description: URL запроса
               example: http://api.rasp.yandex.net/v1.0/search/?apikey=key&format=json&from=s96002137
 
+    Segment:
+      type: object
+      properties:
+        from:
+          $ref: "#/components/schemas/Station"
+
+        thread:
+          $ref: "#/components/schemas/Thread"
+
+        departure_platform:
+          type: string
+          description: |
+            Номер платформы станции отправления.
+
+            Принимает значение `null`, если номер платформы не указан.
+
+        stops:
+          type: string
+          description: |
+            Станции следования рейса, на которых совершается остановка. Описывается в
+            свободной форме. Например: значение `везде` значит, что остановка совершается
+            на всех станциях следования.
+
+            Пустая строка значит, что по пути следования остановок нет.
+
+        departure_terminal:
+          type: string
+          description: |
+            Название терминала станции отправления.
+
+            Принимает значение null, если название терминала не указано.
+
+        to:
+          $ref: "#/components/schemas/Station"
+
+        has_transfers:
+          type: boolean
+          description: Признак наличия пересадок по ходу рейса.
+
+        duration:
+          type: integer
+          description: Продолжительность рейса (в секундах).
+
+        arrival_terminal:
+          type: string
+          description: |
+            Название терминала станции прибытия.
+
+            Принимает значение `null`, если название терминала не указано.
+
+        start_date:
+          type: string
+          description: Дата отправления рейса.
+
+        arrival_platform:
+          type: string
+          description: |
+            Номер платформы станции прибытия.
+
+            Строка возвращается пустой, если номер платформы не указан.
+
+        tickets_info:
+          type: object
+          description: Информация о доступных типах билетов и их цене.
+          properties:
+            et_marker:
+              type: boolean
+              description: |
+                Признак возможности купить электронный билет.
+
+                Возможные значения:
+
+                - `true` — есть возможность купить электронный билет;
+                - `false` — электронный билет купить нельзя.
+
+            places:
+              type: array
+              description: Доступные типы и цена билетов.
+              items:
+                type: object
+                properties:
+                  currency:
+                    type: string
+                    description: Идентификатор валюты, в которой указана цена.
+
+                  name:
+                    type: string
+                    description: Название типа билета (например, «эконом»).
+
+                  price:
+                    type: object
+                    description: Цена билета.
+                    properties:
+                      cents:
+                        type: integer
+                        description: |
+                          Целое число дополнительных единиц валюты (например, копеек или
+                          центов).
+
+                      whole:
+                        type: integer
+                        description: Целое число основных единиц валюты (например, рублей).
+
     ScheduleItem:
       type: object
       properties:
@@ -1090,7 +1225,7 @@ components:
             Пустая строка значит, что информации о платформе или пути нет.
 
     Thread:
-      tyte: object
+      type: object
       description: Информация о нитке.
       properties:
         uid:

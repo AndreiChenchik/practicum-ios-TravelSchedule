@@ -58,6 +58,12 @@ struct ContentView: View {
 
         Section("Fetch") {
           VStack(alignment: .leading) {
+            Button("Search /search/") { fetchSchedule() }
+            Text("Загрузить нити от s9600766 к s2000009")
+              .foregroundStyle(.secondary)
+          }
+
+          VStack(alignment: .leading) {
             Button("Schedule /schedule/") { fetchSchedule() }
             Text("Загрузить расписание s9600766")
               .foregroundStyle(.secondary)
@@ -65,7 +71,7 @@ struct ContentView: View {
 
           VStack(alignment: .leading) {
             Button("Thread /thread/") { fetchThread() }
-            Text("Загрузить нить 6307_0_9601681_g24_4")
+            Text("Загрузить первую нить s9600766")
               .foregroundStyle(.secondary)
           }
 
@@ -130,6 +136,13 @@ private extension ContentView {
     }
   }
 
+  func fetchThreads() {
+    fetch {
+      let threads = try await apiClient.getThreads(from: "s9600766", to: "s2000009")
+      return threads.map { PreviewItem(id: $0.uid, title: $0.title, description: $0.days) }
+    }
+  }
+
   func fetchSchedule() {
     fetch {
       let threads = try await apiClient.getSchedule(station: "s9600766")
@@ -139,8 +152,9 @@ private extension ContentView {
 
   func fetchThread() {
     fetch {
-      let threads = try await apiClient.getThread(uid: "6307_0_9601681_g24_4")
-      return threads.map { PreviewItem(id: $0.code, title: $0.title, description: $0.coordinates) }
+      let threads = try await apiClient.getSchedule(station: "s9600766")
+      let thread = try await apiClient.getThread(uid: threads.first?.uid ?? "thread")
+      return thread.map { PreviewItem(id: $0.code, title: $0.title, description: $0.coordinates) }
     }
   }
 
@@ -186,6 +200,14 @@ private extension ContentView {
 
 #if DEBUG
   struct PreviewClient: APIServiceProtocol {
+    func getThreads(from _: String, to _: String) async throws -> [Thread] {
+      [
+        Thread(uid: "6307_0_9601681_g24_4",
+               title: "Thread 6307_0_9601681_g24_4",
+               days: "All"),
+      ]
+    }
+
     func getSchedule(station _: String) async throws -> [Thread] {
       [
         Thread(uid: "6307_0_9601681_g24_4",
