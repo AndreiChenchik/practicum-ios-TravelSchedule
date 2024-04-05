@@ -22,6 +22,7 @@
 		F26C6A4A2BB870D400A54993 /* Carrier.swift in Sources */ = {isa = PBXBuildFile; fileRef = F26C6A492BB870D400A54993 /* Carrier.swift */; };
 		F26C6A4E2BB9C17700A54993 /* Settlement.swift in Sources */ = {isa = PBXBuildFile; fileRef = F26C6A4D2BB9C17700A54993 /* Settlement.swift */; };
 		F26C6A512BBA40C000A54993 /* Thread.swift in Sources */ = {isa = PBXBuildFile; fileRef = F26C6A502BBA40C000A54993 /* Thread.swift */; };
+		F26C6A552BBFED8E00A54993 /* TabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = F26C6A542BBFED8E00A54993 /* TabBar.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -39,6 +40,7 @@
 		F26C6A492BB870D400A54993 /* Carrier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Carrier.swift; sourceTree = "<group>"; };
 		F26C6A4D2BB9C17700A54993 /* Settlement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settlement.swift; sourceTree = "<group>"; };
 		F26C6A502BBA40C000A54993 /* Thread.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Thread.swift; sourceTree = "<group>"; };
+		F26C6A542BBFED8E00A54993 /* TabBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBar.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -83,6 +85,7 @@
 				F26C6A1E2BB604FC00A54993 /* Assets.xcassets */,
 				F26C6A202BB604FC00A54993 /* Preview Content */,
 				F26C6A3A2BB6233500A54993 /* APIService.swift */,
+				F26C6A542BBFED8E00A54993 /* TabBar.swift */,
 			);
 			path = TravelSchedule;
 			sourceTree = "<group>";
@@ -213,6 +216,7 @@
 				F26C6A482BB72C8C00A54993 /* Station.swift in Sources */,
 				F26C6A512BBA40C000A54993 /* Thread.swift in Sources */,
 				F26C6A3F2BB71FD400A54993 /* AuthenticationMiddleware.swift in Sources */,
+				F26C6A552BBFED8E00A54993 /* TabBar.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
