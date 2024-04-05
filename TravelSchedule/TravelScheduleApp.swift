@@ -28,7 +28,7 @@ struct TravelScheduleApp: App {
 
   var body: some Scene {
     WindowGroup {
-      ContentView(apiClient: apiClient)
+      Text("Hello world")
     }
   }
 }
