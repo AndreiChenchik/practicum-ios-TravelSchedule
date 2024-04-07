@@ -12,6 +12,7 @@ struct ItemPicker<Content: View>: View {
   let noResultsText: String
   var onSelection: ((PickerItem) -> Void)?
   var content: ((PickerItem) -> Content)?
+  var withCustomBackButton: Bool = false
 
   @State private var searchText = ""
   @State private var isPresenting = false
@@ -37,7 +38,7 @@ struct ItemPicker<Content: View>: View {
       }
     }
     .navigationBarTitleDisplayMode(.inline)
-    .withCustomBackButton()
+    .withCustomBackButton(isEnabled: withCustomBackButton)
     .searchable(text: $searchText,
                 placement: .navigationBarDrawer(displayMode: .always),
                 prompt: "Введите запрос")
@@ -81,10 +82,16 @@ struct ItemPicker<Content: View>: View {
 }
 
 extension ItemPicker where Content == EmptyView {
-  init(items: [PickerItem], noResultsText: String, onSelection: ((PickerItem) -> Void)? = nil) {
+  init(
+    items: [PickerItem], 
+    noResultsText: String,
+    onSelection: ((PickerItem) -> Void)? = nil,
+    withCustomBackButton: Bool = false
+  ) {
     self.items = items
     self.noResultsText = noResultsText
     self.onSelection = onSelection
+    self.withCustomBackButton = withCustomBackButton
   }
 }
 

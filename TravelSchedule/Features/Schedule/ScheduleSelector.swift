@@ -26,10 +26,8 @@ struct ScheduleSelector: View {
         searchButton
       }
     }
-    .background {
-      selectNavigation
-      searchNavigation
-    }
+    .background { searchNavigation }
+    .fullScreenCover(isPresented: isShowingSelect) { StationSelector(onComplete: selectStation) }
   }
 
   private var searchButton: some View {
@@ -93,43 +91,25 @@ struct ScheduleSelector: View {
     destination = nil
   }
 
-  private var selectNavigation: some View {
-    NavigationLink(
-      isActive: .init(get: { destination == .from || destination == .to },
-                      set: { _ in destination = nil })
-    ) {
-      ItemPicker(
-        items: .citiesMock,
-        noResultsText: "Город не найден",
-        content: { city in
-          ItemPicker(
-            items: .stationsMock,
-            noResultsText: "Станция не найдена",
-            onSelection: { station in
-              selectStation("\(city.label) (\(station.label))")
-            }
-          )
-          .navigationTitle("Выбор станции")
-        }
-      )
-      .navigationTitle("Выбор города")
-    } label: {
-      EmptyView()
-    }
-  }
-
   @ViewBuilder
   private var searchNavigation: some View {
     if let from, let to {
-      NavigationLink(
-        isActive: .init(get: { destination == .search },
-                        set: { _ in destination = nil })
-      ) {
+      NavigationLink(isActive: isShowingSearch) {
         TrainSearch(direction: "\(from) → \(to)")
       } label: {
         EmptyView()
       }
     }
+  }
+
+  private var isShowingSearch: Binding<Bool> {
+    .init(get: { destination == .search },
+          set: { _ in destination = nil })
+  }
+
+  private var isShowingSelect: Binding<Bool> {
+    .init(get: { destination == .from || destination == .to },
+          set: { _ in destination = nil })
   }
 }
 

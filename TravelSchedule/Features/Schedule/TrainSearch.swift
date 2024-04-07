@@ -12,7 +12,7 @@ struct TrainSearch: View {
 
   var body: some View {
     Text(direction)
-      .withCustomBackButton()
+      .withCustomBackButton(isEnabled: true)
   }
 }
 

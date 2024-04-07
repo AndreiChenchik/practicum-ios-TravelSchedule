@@ -19,6 +19,7 @@
 		F2402FD82BC2892B00165760 /* ScheduleSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2402FD72BC2892B00165760 /* ScheduleSelector.swift */; };
 		F2402FDD2BC2A13400165760 /* TrainSearch.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2402FDC2BC2A13400165760 /* TrainSearch.swift */; };
 		F2402FE02BC2A53600165760 /* CustomBackButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2402FDF2BC2A53600165760 /* CustomBackButton.swift */; };
+		F2402FE32BC2B51B00165760 /* StationSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2402FE22BC2B51B00165760 /* StationSelector.swift */; };
 		F26C6A1B2BB604FC00A54993 /* TravelScheduleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F26C6A1A2BB604FC00A54993 /* TravelScheduleApp.swift */; };
 		F26C6A1D2BB604FC00A54993 /* APIPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = F26C6A1C2BB604FC00A54993 /* APIPreview.swift */; };
 		F26C6A1F2BB604FC00A54993 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F26C6A1E2BB604FC00A54993 /* Assets.xcassets */; };
@@ -53,6 +54,7 @@
 		F2402FD72BC2892B00165760 /* ScheduleSelector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleSelector.swift; sourceTree = "<group>"; };
 		F2402FDC2BC2A13400165760 /* TrainSearch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainSearch.swift; sourceTree = "<group>"; };
 		F2402FDF2BC2A53600165760 /* CustomBackButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomBackButton.swift; sourceTree = "<group>"; };
+		F2402FE22BC2B51B00165760 /* StationSelector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StationSelector.swift; sourceTree = "<group>"; };
 		F26C6A172BB604FC00A54993 /* TravelSchedule.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TravelSchedule.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F26C6A1A2BB604FC00A54993 /* TravelScheduleApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TravelScheduleApp.swift; sourceTree = "<group>"; };
 		F26C6A1C2BB604FC00A54993 /* APIPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIPreview.swift; sourceTree = "<group>"; };
@@ -222,6 +224,7 @@
 				F2951A812BC025A10028BCCC /* ScheduleTab.swift */,
 				F2402FD72BC2892B00165760 /* ScheduleSelector.swift */,
 				F2402FDC2BC2A13400165760 /* TrainSearch.swift */,
+				F2402FE22BC2B51B00165760 /* StationSelector.swift */,
 			);
 			path = Schedule;
 			sourceTree = "<group>";
@@ -318,6 +321,7 @@
 				F26C6A432BB7260500A54993 /* StationsListFixMiddleware.swift in Sources */,
 				F2402FD12BC207D600165760 /* PickerItem.swift in Sources */,
 				F26C6A1D2BB604FC00A54993 /* APIPreview.swift in Sources */,
+				F2402FE32BC2B51B00165760 /* StationSelector.swift in Sources */,
 				F2402FE02BC2A53600165760 /* CustomBackButton.swift in Sources */,
 				F2402FDD2BC2A13400165760 /* TrainSearch.swift in Sources */,
 				F2402FB32BC1CBAC00165760 /* _Mocks.swift in Sources */,
