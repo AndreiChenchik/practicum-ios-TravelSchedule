@@ -25,6 +25,8 @@
 		F2402FEC2BC2C0DC00165760 /* ScheduleItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2402FEB2BC2C0DC00165760 /* ScheduleItem.swift */; };
 		F2402FEF2BC2C59C00165760 /* CarrierInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2402FEE2BC2C59C00165760 /* CarrierInfo.swift */; };
 		F2402FF22BC2C70600165760 /* CarrierInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2402FF12BC2C70600165760 /* CarrierInfoView.swift */; };
+		F2402FF52BC2D19100165760 /* TrainFilterSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2402FF42BC2D19100165760 /* TrainFilterSettings.swift */; };
+		F2402FF82BC2D23C00165760 /* TrainFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2402FF72BC2D23C00165760 /* TrainFilter.swift */; };
 		F26C6A1B2BB604FC00A54993 /* TravelScheduleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F26C6A1A2BB604FC00A54993 /* TravelScheduleApp.swift */; };
 		F26C6A1D2BB604FC00A54993 /* APIPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = F26C6A1C2BB604FC00A54993 /* APIPreview.swift */; };
 		F26C6A1F2BB604FC00A54993 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F26C6A1E2BB604FC00A54993 /* Assets.xcassets */; };
@@ -65,6 +67,8 @@
 		F2402FEB2BC2C0DC00165760 /* ScheduleItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleItem.swift; sourceTree = "<group>"; };
 		F2402FEE2BC2C59C00165760 /* CarrierInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarrierInfo.swift; sourceTree = "<group>"; };
 		F2402FF12BC2C70600165760 /* CarrierInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarrierInfoView.swift; sourceTree = "<group>"; };
+		F2402FF42BC2D19100165760 /* TrainFilterSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainFilterSettings.swift; sourceTree = "<group>"; };
+		F2402FF72BC2D23C00165760 /* TrainFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainFilter.swift; sourceTree = "<group>"; };
 		F26C6A172BB604FC00A54993 /* TravelSchedule.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TravelSchedule.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F26C6A1A2BB604FC00A54993 /* TravelScheduleApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TravelScheduleApp.swift; sourceTree = "<group>"; };
 		F26C6A1C2BB604FC00A54993 /* APIPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIPreview.swift; sourceTree = "<group>"; };
@@ -190,6 +194,7 @@
 				F2402FD02BC207D600165760 /* PickerItem.swift */,
 				F2402FEB2BC2C0DC00165760 /* ScheduleItem.swift */,
 				F2402FEE2BC2C59C00165760 /* CarrierInfo.swift */,
+				F2402FF42BC2D19100165760 /* TrainFilterSettings.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -240,6 +245,7 @@
 				F2402FE22BC2B51B00165760 /* StationSelector.swift */,
 				F2402FE82BC2BB7000165760 /* ScheduleItemView.swift */,
 				F2402FF12BC2C70600165760 /* CarrierInfoView.swift */,
+				F2402FF72BC2D23C00165760 /* TrainFilter.swift */,
 			);
 			path = Schedule;
 			sourceTree = "<group>";
@@ -343,6 +349,7 @@
 				F2402FE32BC2B51B00165760 /* StationSelector.swift in Sources */,
 				F2402FE02BC2A53600165760 /* CustomBackButton.swift in Sources */,
 				F2402FDD2BC2A13400165760 /* TrainSelector.swift in Sources */,
+				F2402FF82BC2D23C00165760 /* TrainFilter.swift in Sources */,
 				F2402FB32BC1CBAC00165760 /* _Mocks.swift in Sources */,
 				F26C6A3B2BB6233500A54993 /* APIService.swift in Sources */,
 				F2402FC92BC1D0AD00165760 /* StoryView.swift in Sources */,
@@ -356,6 +363,7 @@
 				F2402FCE2BC206DF00165760 /* ItemPicker.swift in Sources */,
 				F2402FC32BC1CE1B00165760 /* StoriesPreview.swift in Sources */,
 				F2951A822BC025A10028BCCC /* ScheduleTab.swift in Sources */,
+				F2402FF52BC2D19100165760 /* TrainFilterSettings.swift in Sources */,
 				F26C6A552BBFED8E00A54993 /* RootView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

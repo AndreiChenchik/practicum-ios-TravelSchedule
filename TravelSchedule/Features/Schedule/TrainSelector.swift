@@ -9,8 +9,18 @@ import SwiftUI
 
 struct TrainSelector: View {
   let direction: String
-
   let items: [ScheduleItem] = .mock
+
+  @State private var filterSettings = TrainFilterSettings()
+  @State private var isShowingTrainFilter = false
+
+  var filteredItems: [ScheduleItem] {
+    if filterSettings.partsOfDay.isEmpty {
+      items
+    } else {
+      []
+    }
+  }
 
   var body: some View {
     ScrollView {
@@ -19,7 +29,7 @@ struct TrainSelector: View {
           .font(.system(size: 24, weight: .bold))
           .padding(.bottom, 8)
 
-        ForEach(items) { item in
+        ForEach(filteredItems) { item in
           NavigationLink {
             CarrierInfoView(carrier: item.carrier)
           } label: {
@@ -30,11 +40,22 @@ struct TrainSelector: View {
       .padding(.horizontal, 16)
       .padding(.top, 16)
     }
+    .overlay {
+      if filteredItems.isEmpty {
+        Text("Вариантов нет")
+          .font(.system(size: 24, weight: .bold))
+      }
+    }
     .safeAreaInset(edge: .bottom) {
       CustomButton(title: "Уточнить время") {
-        print("Уточнить")
+        isShowingTrainFilter = true
       }
       .padding(16)
+    }
+    .fullScreenCover(isPresented: $isShowingTrainFilter) {
+      NavigationView {
+        TrainFilter(settings: $filterSettings)
+      }
     }
     .withCustomBackButton(isEnabled: true)
   }
@@ -45,5 +66,6 @@ struct TrainSelector: View {
     NavigationView {
       TrainSelector(direction: "Moscow → Moon")
     }
+    .tint(.ypBlack)
   }
 #endif
