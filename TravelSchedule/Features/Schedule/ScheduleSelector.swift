@@ -10,7 +10,6 @@ import SwiftUI
 struct ScheduleSelector: View {
   @State private var from: String?
   @State private var to: String?
-
   @State private var destination: Destination?
 
   private enum Destination {

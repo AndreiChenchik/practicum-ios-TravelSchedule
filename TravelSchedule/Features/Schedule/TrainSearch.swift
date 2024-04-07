@@ -9,12 +9,15 @@ import SwiftUI
 
 struct TrainSearch: View {
   let direction: String
-  
+
   var body: some View {
     Text(direction)
+      .withCustomBackButton()
   }
 }
 
-#Preview {
-  TrainSearch(direction: "Moscow → Moon")
-}
+#if DEBUG
+  #Preview {
+    TrainSearch(direction: "Moscow → Moon")
+  }
+#endif

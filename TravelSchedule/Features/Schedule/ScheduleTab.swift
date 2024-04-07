@@ -8,16 +8,14 @@
 import SwiftUI
 
 struct ScheduleTab: View {
-@State private var isNavigating = false
   var body: some View {
     NavigationView {
-      VStack {
+      VStack(spacing: 20) {
         StoriesPreview()
-        
+
         ScheduleSelector()
           .padding(.horizontal, 16)
-          .padding(.top, 20)
-        
+
         Spacer()
       }
     }

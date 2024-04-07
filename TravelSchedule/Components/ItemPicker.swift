@@ -37,6 +37,7 @@ struct ItemPicker<Content: View>: View {
       }
     }
     .navigationBarTitleDisplayMode(.inline)
+    .withCustomBackButton()
     .searchable(text: $searchText,
                 placement: .navigationBarDrawer(displayMode: .always),
                 prompt: "Введите запрос")
