@@ -10,13 +10,13 @@ import SwiftUI
 struct RootView: View {
   var body: some View {
     TabView {
-      ScheduleView()
+      ScheduleTab()
         .tabItem {
           Image("schedule")
             .resizable()
         }
 
-      Text("Settings")
+      APIPreview()
         .tabItem {
           Image("settings")
             .resizable()
