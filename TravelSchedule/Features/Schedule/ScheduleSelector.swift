@@ -8,10 +8,16 @@
 import SwiftUI
 
 struct ScheduleSelector: View {
-  @State private var isSelectingStation = false
   @State private var from: String?
   @State private var to: String?
-  @State private var isSelectingTo = false
+
+  @State private var destination: Destination?
+
+  private enum Destination {
+    case from
+    case to
+    case search
+  }
 
   var body: some View {
     VStack(spacing: 16) {
@@ -21,12 +27,15 @@ struct ScheduleSelector: View {
         searchButton
       }
     }
-    .background { navigation }
+    .background {
+      selectNavigation
+      searchNavigation
+    }
   }
 
   private var searchButton: some View {
     Button {
-      print("lets start")
+      destination = .search
     } label: {
       Text("Найти")
         .font(.system(size: 17, weight: .bold))
@@ -41,20 +50,15 @@ struct ScheduleSelector: View {
   private var sheduleSeletionBlock: some View {
     HStack(spacing: 16) {
       VStack(spacing: 0) {
-        button(label: from, prompt: "Откуда") {
-          isSelectingTo = false
-          isSelectingStation = true
-        }
-
-        button(label: to, prompt: "Куда") {
-          isSelectingTo = true
-          isSelectingStation = true
-        }
+        button(label: from, prompt: "Откуда") { destination = .from }
+        button(label: to, prompt: "Куда") { destination = .to }
       }
       .background(.white)
       .clipShape(RoundedRectangle(cornerRadius: 20))
 
-      Button(action: swapSelection) {
+      Button {
+        (from, to) = (to, from)
+      } label: {
         Image("swap")
           .resizable()
           .frame(width: 24, height: 24)
@@ -80,24 +84,21 @@ struct ScheduleSelector: View {
     .frame(maxWidth: .infinity, alignment: .leading)
   }
 
-  private func swapSelection() {
-    let temp = from
-    from = to
-    to = temp
-  }
-
-  private func selected(_ selection: String) {
-    if isSelectingTo {
-      to = selection
-    } else {
-      from = selection
+  private func selectStation(_ selection: String) {
+    switch destination {
+    case .from: from = selection
+    case .to: to = selection
+    default: break
     }
 
-    isSelectingStation = false
+    destination = nil
   }
 
-  private var navigation: some View {
-    NavigationLink(isActive: $isSelectingStation) {
+  private var selectNavigation: some View {
+    NavigationLink(
+      isActive: .init(get: { destination == .from || destination == .to },
+                      set: { _ in destination = nil })
+    ) {
       ItemPicker(
         items: .citiesMock,
         noResultsText: "Город не найден",
@@ -106,7 +107,7 @@ struct ScheduleSelector: View {
             items: .stationsMock,
             noResultsText: "Станция не найдена",
             onSelection: { station in
-              selected("\(city.label) (\(station.label))")
+              selectStation("\(city.label) (\(station.label))")
             }
           )
           .navigationTitle("Выбор станции")
@@ -117,10 +118,27 @@ struct ScheduleSelector: View {
       EmptyView()
     }
   }
+
+  @ViewBuilder
+  private var searchNavigation: some View {
+    if let from, let to {
+      NavigationLink(
+        isActive: .init(get: { destination == .search },
+                        set: { _ in destination = nil })
+      ) {
+        TrainSearch(direction: "\(from) → \(to)")
+      } label: {
+        EmptyView()
+      }
+    }
+  }
 }
 
 #if DEBUG
   #Preview {
-    ScheduleSelector()
+    NavigationView {
+      ScheduleSelector()
+        .padding()
+    }
   }
 #endif
