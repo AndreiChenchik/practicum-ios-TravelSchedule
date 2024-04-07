@@ -66,6 +66,7 @@ struct UnreadStoriesView: View {
         progressView(progress: progressValue(for: index))
       }
     }
+    .tint(.blueUniversal)
   }
 
   private var dismissButton: some View {

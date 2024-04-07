@@ -46,6 +46,7 @@
 		F2951A7A2BC01D390028BCCC /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = F2951A792BC01D390028BCCC /* README.md */; };
 		F2951A822BC025A10028BCCC /* ScheduleTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2951A812BC025A10028BCCC /* ScheduleTab.swift */; };
 		F2951A852BC027B60028BCCC /* Story.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2951A842BC027B60028BCCC /* Story.swift */; };
+		F2F56E392BC2DC44000D0744 /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F2F56E382BC2DC44000D0744 /* SplashScreen.storyboard */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -69,6 +70,7 @@
 		F2402FF12BC2C70600165760 /* CarrierInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarrierInfoView.swift; sourceTree = "<group>"; };
 		F2402FF42BC2D19100165760 /* TrainFilterSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainFilterSettings.swift; sourceTree = "<group>"; };
 		F2402FF72BC2D23C00165760 /* TrainFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainFilter.swift; sourceTree = "<group>"; };
+		F2402FF92BC2DAE700165760 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		F26C6A172BB604FC00A54993 /* TravelSchedule.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TravelSchedule.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F26C6A1A2BB604FC00A54993 /* TravelScheduleApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TravelScheduleApp.swift; sourceTree = "<group>"; };
 		F26C6A1C2BB604FC00A54993 /* APIPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIPreview.swift; sourceTree = "<group>"; };
@@ -87,6 +89,7 @@
 		F2951A792BC01D390028BCCC /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		F2951A812BC025A10028BCCC /* ScheduleTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleTab.swift; sourceTree = "<group>"; };
 		F2951A842BC027B60028BCCC /* Story.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Story.swift; sourceTree = "<group>"; };
+		F2F56E382BC2DC44000D0744 /* SplashScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = SplashScreen.storyboard; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -148,6 +151,7 @@
 		F26C6A192BB604FC00A54993 /* TravelSchedule */ = {
 			isa = PBXGroup;
 			children = (
+				F2402FF92BC2DAE700165760 /* Info.plist */,
 				F2402FCC2BC2068E00165760 /* Components */,
 				F2951A882BC0283F0028BCCC /* Features */,
 				F26C6A1A2BB604FC00A54993 /* TravelScheduleApp.swift */,
@@ -222,6 +226,7 @@
 			children = (
 				F26C6A1E2BB604FC00A54993 /* Assets.xcassets */,
 				F26C6A202BB604FC00A54993 /* Preview Content */,
+				F2F56E382BC2DC44000D0744 /* SplashScreen.storyboard */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -318,6 +323,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F2F56E392BC2DC44000D0744 /* SplashScreen.storyboard in Resources */,
 				F26C6A222BB604FC00A54993 /* Preview Assets.xcassets in Resources */,
 				F26C6A392BB621F100A54993 /* openapi-generator-config.yaml in Resources */,
 				F2951A7A2BC01D390028BCCC /* README.md in Resources */,
@@ -508,9 +514,10 @@
 				DEVELOPMENT_TEAM = BX5R6FSLCJ;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = TravelSchedule/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = SplashScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
@@ -542,9 +549,10 @@
 				DEVELOPMENT_TEAM = BX5R6FSLCJ;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = TravelSchedule/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = SplashScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
