@@ -36,7 +36,7 @@ struct CarrierInfoView: View {
             .resizable()
             .scaledToFill()
         } placeholder: {
-          ProgressView()
+          Color.lightGrayUniveral
         }
       }
       .clipped()
@@ -54,7 +54,7 @@ struct CarrierInfoView: View {
 
       Text(value)
         .font(.system(size: 12))
-        .foregroundStyle(.blue)
+        .foregroundStyle(.blueUniversal)
     }
     .padding(.vertical, 12)
   }

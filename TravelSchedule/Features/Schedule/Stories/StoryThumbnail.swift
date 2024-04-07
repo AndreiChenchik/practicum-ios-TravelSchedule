@@ -16,7 +16,7 @@ struct StoryThumbnail: View {
       .lineLimit(3)
       .multilineTextAlignment(.leading)
       .font(.system(size: 12))
-      .foregroundStyle(Color.white)
+      .foregroundStyle(Color.ypWhite)
   }
 
   private let shape = RoundedRectangle(cornerRadius: 16)
@@ -29,7 +29,7 @@ struct StoryThumbnail: View {
       .background { StoryImage(story: story) }
       .overlay {
         if !isRead {
-          shape.strokeBorder(Color.blue, lineWidth: 4)
+          shape.strokeBorder(.blueUniversal, lineWidth: 4)
         }
       }
       .clipShape(shape)

@@ -41,7 +41,7 @@ struct TrainSearchWidget: View {
         button(label: from, prompt: "Откуда") { destination = .from }
         button(label: to, prompt: "Куда") { destination = .to }
       }
-      .background(.white)
+      .background(.ypWhite)
       .clipShape(RoundedRectangle(cornerRadius: 20))
 
       Button {
@@ -49,14 +49,15 @@ struct TrainSearchWidget: View {
       } label: {
         Image(.swap)
           .resizable()
+          .foregroundStyle(.blueUniversal)
           .frame(width: 24, height: 24)
           .padding(6)
-          .background(.white)
+          .background(.ypWhite)
           .clipShape(Circle())
       }
     }
     .padding(16)
-    .background(.blue)
+    .background(.blueUniversal)
     .clipShape(RoundedRectangle(cornerRadius: 20))
   }
 
@@ -67,7 +68,7 @@ struct TrainSearchWidget: View {
         .font(.system(size: 17))
         .padding(.vertical, 14)
         .padding(.horizontal, 16)
-        .foregroundStyle(label == nil ? .gray : .black)
+        .foregroundStyle(label == nil ? .grayUniversal : .ypBlack)
     }
     .frame(maxWidth: .infinity, alignment: .leading)
   }
@@ -90,7 +91,6 @@ struct TrainSearchWidget: View {
       } label: {
         EmptyView()
       }
-      .tint(.black)
     }
   }
 

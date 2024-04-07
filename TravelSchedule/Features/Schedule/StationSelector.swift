@@ -42,7 +42,6 @@ struct StationSelector: View {
         }
       }
     }
-    .tint(.black)
   }
 }
 

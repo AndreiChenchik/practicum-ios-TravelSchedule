@@ -46,7 +46,7 @@ struct UnreadStoriesView: View {
 
   private func progressView(progress: Double) -> some View {
     ProgressView(value: progress)
-      .background { Color.white }
+      .background { Color.ypWhite }
       .clipShape(Capsule())
   }
 
@@ -75,9 +75,9 @@ struct UnreadStoriesView: View {
       Image(.close)
         .resizable()
         .frame(width: 24, height: 24)
-        .foregroundStyle(.white)
+        .foregroundStyle(.ypWhite)
         .padding(3)
-        .background { Color.black }
+        .background { Color.ypBlack }
         .clipShape(Circle())
     }
   }

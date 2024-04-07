@@ -33,7 +33,7 @@ struct ScheduleItemView: View {
       scheduleInfo
     }
     .font(.system(size: 17))
-    .foregroundStyle(.black)
+    .foregroundStyle(.ypBlack)
     .padding(14)
     .background { Color.lightGrayUniveral }
     .clipShape(RoundedRectangle(cornerRadius: 24))

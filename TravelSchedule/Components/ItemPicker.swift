@@ -58,7 +58,7 @@ struct ItemPicker<Content: View>: View {
             .frame(width: 24, height: 24)
         }
     }
-    .foregroundStyle(.black)
+    .foregroundStyle(.ypBlack)
   }
 
   private func onItemTap(_ item: PickerItem) {

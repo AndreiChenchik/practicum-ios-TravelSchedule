@@ -21,7 +21,7 @@ struct StoryView: View {
         .font(.system(size: 20))
     }
     .multilineTextAlignment(.leading)
-    .foregroundStyle(Color.white)
+    .foregroundStyle(Color.ypWhite)
   }
 
   private let shape = RoundedRectangle(cornerRadius: 40)

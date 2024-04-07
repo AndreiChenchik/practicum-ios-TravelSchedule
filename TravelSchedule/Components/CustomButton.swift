@@ -19,13 +19,12 @@ struct CustomButton: View {
     } label: {
       Text(title)
         .font(.system(size: 17, weight: .bold))
-        .foregroundStyle(.white)
+        .foregroundStyle(.ypWhite)
         .padding(.vertical, 20)
         .frame(maxWidth: .infinity)
-        .background(isEnabled ? .blue : .gray)
+        .background(isEnabled ? .blueUniversal : .lightGrayUniveral)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
-    .opacity(isEnabled ? 1 : 0.5)
     .disabled(!isEnabled)
   }
 }

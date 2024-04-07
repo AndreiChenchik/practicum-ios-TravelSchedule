@@ -16,7 +16,7 @@ struct StoryImage: View {
         .resizable()
         .scaledToFill()
     } placeholder: {
-      Color.gray.opacity(0.5)
+      Color.lightGrayUniveral
     }
   }
 }
