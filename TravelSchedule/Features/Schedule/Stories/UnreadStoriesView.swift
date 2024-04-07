@@ -72,7 +72,7 @@ struct UnreadStoriesView: View {
     Button {
       dismiss()
     } label: {
-      Image("close")
+      Image(.close)
         .resizable()
         .frame(width: 24, height: 24)
         .foregroundStyle(.white)

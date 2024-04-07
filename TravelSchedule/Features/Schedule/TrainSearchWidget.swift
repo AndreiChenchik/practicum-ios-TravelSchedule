@@ -1,5 +1,5 @@
 //
-//  ScheduleSelector.swift
+//  TrainSearchWidget.swift
 //  TravelSchedule
 //
 //  Created by andrei.chenchik on 07.04.24.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct ScheduleSelector: View {
+struct TrainSearchWidget: View {
   @State private var from: String?
   @State private var to: String?
   @State private var destination: Destination?
@@ -21,27 +21,18 @@ struct ScheduleSelector: View {
   var body: some View {
     VStack(spacing: 16) {
       sheduleSeletionBlock
-
-      if from != nil, to != nil {
-        searchButton
-      }
+      searchButton
     }
     .background { searchNavigation }
     .fullScreenCover(isPresented: isShowingSelect) { StationSelector(onComplete: selectStation) }
   }
 
   private var searchButton: some View {
-    Button {
+    CustomButton(title: "Найти") {
       destination = .search
-    } label: {
-      Text("Найти")
-        .font(.system(size: 17, weight: .bold))
-        .foregroundStyle(.white)
-        .padding(.vertical, 20)
-        .frame(width: 150)
-        .background(.blue)
-        .clipShape(RoundedRectangle(cornerRadius: 16))
     }
+    .frame(width: 150)
+    .disabled(from == nil || to == nil)
   }
 
   private var sheduleSeletionBlock: some View {
@@ -56,7 +47,7 @@ struct ScheduleSelector: View {
       Button {
         (from, to) = (to, from)
       } label: {
-        Image("swap")
+        Image(.swap)
           .resizable()
           .frame(width: 24, height: 24)
           .padding(6)
@@ -95,10 +86,11 @@ struct ScheduleSelector: View {
   private var searchNavigation: some View {
     if let from, let to {
       NavigationLink(isActive: isShowingSearch) {
-        TrainSearch(direction: "\(from) → \(to)")
+        TrainSelector(direction: "\(from) → \(to)")
       } label: {
         EmptyView()
       }
+      .tint(.black)
     }
   }
 
@@ -116,7 +108,7 @@ struct ScheduleSelector: View {
 #if DEBUG
   #Preview {
     NavigationView {
-      ScheduleSelector()
+      TrainSearchWidget()
         .padding()
     }
   }

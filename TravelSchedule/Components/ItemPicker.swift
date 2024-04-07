@@ -53,7 +53,7 @@ struct ItemPicker<Content: View>: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.vertical, 16)
         .overlay(alignment: .trailing) {
-          Image("chevron")
+          Image(.chevron)
             .resizable()
             .frame(width: 24, height: 24)
         }

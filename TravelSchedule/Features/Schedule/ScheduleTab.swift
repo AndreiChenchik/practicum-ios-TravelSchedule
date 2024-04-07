@@ -13,7 +13,7 @@ struct ScheduleTab: View {
       VStack(spacing: 20) {
         StoriesPreview()
 
-        ScheduleSelector()
+        TrainSearchWidget()
           .padding(.horizontal, 16)
 
         Spacer()

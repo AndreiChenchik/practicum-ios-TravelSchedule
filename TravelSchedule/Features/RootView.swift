@@ -12,13 +12,13 @@ struct RootView: View {
     TabView {
       ScheduleTab()
         .tabItem {
-          Image("schedule")
+          Image(.schedule)
             .resizable()
         }
 
       APIPreview()
         .tabItem {
-          Image("settings")
+          Image(.settings)
             .resizable()
         }
     }
