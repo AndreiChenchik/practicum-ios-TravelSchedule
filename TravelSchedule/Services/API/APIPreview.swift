@@ -1,10 +1,11 @@
 //
-//  ContentView.swift
+//  APIPreview.swift
 //  TravelSchedule
 //
 //  Created by andrei.chenchik on 28.03.24.
 //
 
+import OpenAPIURLSession
 import SwiftUI
 import UniformTypeIdentifiers
 
@@ -34,8 +35,21 @@ struct PreviewItemView: View {
   }
 }
 
-struct ContentView: View {
-  let apiClient: APIServiceProtocol
+struct APIPreview: View {
+  var apiClient: APIServiceProtocol = {
+    let authenticationMiddleware = AuthenticationMiddleware(
+      apiKey: "c2c6e426-a5d4-4cb6-973d-098880865da2"
+    )
+    let stationsListFixMiddleware = StationsListFixMiddleware()
+
+    let client = try! Client(
+      serverURL: Servers.server1(),
+      transport: URLSessionTransport(),
+      middlewares: [authenticationMiddleware, stationsListFixMiddleware]
+    )
+
+    return APIService(client: client)
+  }()
 
   @State private var items: [PreviewItem] = []
   @State private var isInFlightRequest = false
@@ -120,7 +134,7 @@ struct ContentView: View {
   }
 }
 
-private extension ContentView {
+private extension APIPreview {
   func fetch(_ perform: @escaping () async throws -> [PreviewItem]) {
     isInFlightRequest = true
     items = []
@@ -162,7 +176,8 @@ private extension ContentView {
     fetch {
       let stations = try await apiClient.getNearestStations(latitude: 59.945223,
                                                             longitude: 30.365061)
-      return stations.map { PreviewItem(id: $0.code, title: $0.title, description: $0.coordinates) }
+      return stations
+        .map { PreviewItem(id: $0.code, title: $0.title, description: $0.coordinates) }
     }
   }
 
@@ -186,7 +201,8 @@ private extension ContentView {
   func fetchStations() {
     fetch {
       let stations = try await apiClient.getAllStations()
-      return stations.map { PreviewItem(id: $0.code, title: $0.title, description: $0.coordinates) }
+      return stations
+        .map { PreviewItem(id: $0.code, title: $0.title, description: $0.coordinates) }
     }
   }
 
@@ -272,7 +288,6 @@ private extension ContentView {
   }
 
   #Preview {
-    ContentView(apiClient: PreviewClient())
+    APIPreview(apiClient: PreviewClient())
   }
-
 #endif
