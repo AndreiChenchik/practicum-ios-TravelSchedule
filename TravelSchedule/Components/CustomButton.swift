@@ -22,7 +22,7 @@ struct CustomButton: View {
         .foregroundStyle(.ypWhite)
         .padding(.vertical, 20)
         .frame(maxWidth: .infinity)
-        .background(isEnabled ? .blueUniversal : .lightGrayUniveral)
+        .background(isEnabled ? .blueUniversal : .lightGrayUniversal)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
     .disabled(!isEnabled)
