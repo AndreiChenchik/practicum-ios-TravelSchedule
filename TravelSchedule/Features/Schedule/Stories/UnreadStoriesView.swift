@@ -11,6 +11,7 @@ struct UnreadStoriesView: View {
   @Environment(\.dismiss) var dismiss
 
   let stories: [Story]
+  let startFromId: Story.ID?
   let markAsRead: (Story.ID) -> Void
 
   @State private var currentIndex = 0
@@ -88,6 +89,15 @@ struct UnreadStoriesView: View {
       .onTapGesture {
         switchToNextStory()
       }
+      .gesture(DragGesture(minimumDistance: 20, coordinateSpace: .global)
+        .onEnded { value in
+          let horizontalAmount = value.translation.width
+          let verticalAmount = value.translation.height
+
+          if abs(horizontalAmount) > abs(verticalAmount) {
+            if horizontalAmount < 0 { switchToNextStory() }
+          }
+        })
       .background {
         Color.black.ignoresSafeArea()
       }
@@ -100,11 +110,18 @@ struct UnreadStoriesView: View {
         .padding(.top, 28)
       }
       .onReceive(timer) { _ in progressTimer() }
+      .onAppear {
+        if let startFromId {
+          if let index = stories.firstIndex(where: { $0.id == startFromId }) {
+            currentIndex = index
+          }
+        }
+      }
   }
 }
 
 #Preview {
   let viewModel = StoriesViewModel()
-  return UnreadStoriesView(stories: .mock) { _ in }
+  return UnreadStoriesView(stories: .mock, startFromId: "122") { _ in }
     .onAppear { viewModel.loadStories() }
 }

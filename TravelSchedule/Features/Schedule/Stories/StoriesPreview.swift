@@ -10,12 +10,14 @@ import SwiftUI
 struct StoriesPreview: View {
   @StateObject private var viewModel = StoriesViewModel()
   @State private var storiesToDisplay: [Story]?
+  @State private var startFromStory: Story.ID?
 
   var body: some View {
     ScrollView(.horizontal, showsIndicators: false) {
       LazyHStack(spacing: 12) {
         ForEach(viewModel.allStories) { story in
           Button {
+            startFromStory = story.id
             storiesToDisplay = viewModel.unreadStories
           } label: {
             StoryThumbnail(story: story, isRead: viewModel.readStorieIDs.contains(story.id))
@@ -29,7 +31,9 @@ struct StoriesPreview: View {
     .frame(height: 188)
     .task { viewModel.loadStories() }
     .fullScreenCover(item: $storiesToDisplay) { stories in
-      UnreadStoriesView(stories: stories, markAsRead: viewModel.markAsRead)
+      UnreadStoriesView(stories: stories, 
+                        startFromId: startFromStory,
+                        markAsRead: viewModel.markAsRead)
     }
   }
 }

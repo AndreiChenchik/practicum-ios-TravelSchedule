@@ -35,7 +35,7 @@ struct ScheduleItemView: View {
     .font(.system(size: 17))
     .foregroundStyle(.ypBlack)
     .padding(14)
-    .background { Color.lightGrayUniveral }
+    .background { Color.lightGrayUniversal }
     .clipShape(RoundedRectangle(cornerRadius: 24))
   }
 
@@ -69,7 +69,7 @@ struct ScheduleItemView: View {
             .resizable()
             .scaledToFill()
         } placeholder: {
-          Color.lightGrayUniveral
+          Color.lightGrayUniversal
         }
       }
       .clipShape(RoundedRectangle(cornerRadius: 12))
